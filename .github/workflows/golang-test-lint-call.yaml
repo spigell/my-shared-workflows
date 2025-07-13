@@ -1,7 +1,7 @@
-name: Local CI Test
+name: Local CI Test (Golang)
 
 on:
-  workflow_dispatch:
+  push:
 
 jobs:
   test-workflow:

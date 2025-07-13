@@ -38,7 +38,7 @@ jobs:
         run: |
           cd ${{ inputs.working-directory }}
           set -o pipefail
-          go test ${{ inputs.test-flags }} $(go list ./... | grep -v integration | grep -v crds/generated) | grep -v 'no test files'
+          go test ${{ inputs.test-flags }} $(go list ./... | grep -v integration | grep -v crds/generated)
 
   run-linter:
     name: Run linter
@@ -57,6 +57,6 @@ jobs:
         uses: golangci/golangci-lint-action@v8
         with:
           skip-cache: true
-          working-directory: ${{ working-directory }}
+          working-directory: ${{ inputs.working-directory }}
           args: --timeout=10m
           version: v2.1.6

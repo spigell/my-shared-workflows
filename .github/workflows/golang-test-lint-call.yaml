@@ -1,0 +1,11 @@
+name: Local CI Test (Golang)
+
+on:
+  push:
+
+jobs:
+  test-workflow:
+    uses: ./.github/workflows/golang-test-lint.yaml
+    with:
+      go-version: '1.22'
+      working-directory: 'testdata/golang'

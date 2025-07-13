@@ -1,0 +1,62 @@
+name: Golang test and linting
+
+on:
+  workflow_call:
+    inputs:
+      go-version:
+        required: false
+        type: string
+        default: '1.22'
+      test-flags:
+        required: false
+        type: string
+        default: '-v'
+      working-directory:
+        required: false
+        type: string
+        default: '.'
+      disable-linter:
+        required: false
+        type: boolean
+        default: false
+
+
+jobs:
+  run-unit-test:
+    name: Run unit tests and linter
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Go and install deps
+        uses: ./.github/actions/setup-go-env
+        with:
+          go-version: ${{ inputs.go-version }}
+          working-directory: ${{ inputs.working-directory }}
+
+      - name: Run unit tests
+        run: |
+          cd ${{ inputs.working-directory }}
+          set -o pipefail
+          go test ${{ inputs.test-flags }} $(go list ./... | grep -v integration | grep -v crds/generated) | grep -v 'no test files'
+
+  run-linter:
+    name: Run linter
+    if: ${{ !inputs.disable-linter }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Go and install deps
+        uses: ./.github/actions/setup-go-env
+        with:
+          go-version: ${{ inputs.go-version }}
+          working-directory: ${{ inputs.working-directory }}
+
+      - name: Run the golangci linter
+        uses: golangci/golangci-lint-action@v8
+        with:
+          skip-cache: true
+          working-directory: ${{ working-directory }}
+          args: --timeout=10m
+          version: v2.1.6

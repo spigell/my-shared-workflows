@@ -23,10 +23,20 @@ on:
 
 jobs:
   run-unit-test:
-    name: Run unit tests and linter
+    name: Run unit tests
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+
+      - name: Checkout shared actions
+        uses: actions/checkout@v4
+        with:
+          repository: spigell/my-shared-workflows
+          path: .github/actions-temp
+
+      - name: Move actions into correct path
+        run: |
+          rsync -a .github/actions-temp/.github/actions/ .github/actions/
 
       - name: Setup Go and install deps
         uses: ./.github/actions/setup-go-env
@@ -46,6 +56,16 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+
+      - name: Checkout shared actions
+        uses: actions/checkout@v4
+        with:
+          repository: spigell/my-shared-workflows
+          path: .github/actions-temp
+
+      - name: Move actions into correct path
+        run: |
+          rsync -a .github/actions-temp/.github/actions/ .github/actions/
 
       - name: Setup Go and install deps
         uses: ./.github/actions/setup-go-env

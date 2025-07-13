@@ -8,3 +8,4 @@ jobs:
     uses: ./.github/workflows/golang-test-lint.yaml
     with:
       go-version: '1.22'
+      working-directory: 'testdata/golang'

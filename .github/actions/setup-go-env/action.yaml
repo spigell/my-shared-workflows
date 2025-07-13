@@ -25,7 +25,7 @@ runs:
     - name: Setup Go
       uses: actions/setup-go@v5
       with:
-        go-version-file: ${{ working-directory }}/go.mod
+        go-version-file: ${{ inputs.working-directory }}/go.mod
         cache: false
 
     - name: Download Go modules

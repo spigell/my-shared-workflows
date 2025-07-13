@@ -1,7 +1,6 @@
 name: Local CI Test
 
 on:
-  act:
   workflow_dispatch:
 
 jobs:

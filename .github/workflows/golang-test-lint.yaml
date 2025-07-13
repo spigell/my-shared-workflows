@@ -36,7 +36,7 @@ jobs:
 
       - name: Move actions into correct path
         run: |
-          cp -rv .github/actions-temp/.github/actions/* .github/actions/
+          rsync -a .github/actions-temp/.github/actions/ .github/actions/
 
       - name: Setup Go and install deps
         uses: ./.github/actions/setup-go-env
@@ -65,7 +65,7 @@ jobs:
 
       - name: Move actions into correct path
         run: |
-          cp -rv .github/actions-temp/.github/actions/* .github/actions/
+          rsync -a .github/actions-temp/.github/actions/ .github/actions/
 
       - name: Setup Go and install deps
         uses: ./.github/actions/setup-go-env

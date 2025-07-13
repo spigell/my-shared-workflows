@@ -38,7 +38,7 @@ jobs:
         run: |
           cd ${{ inputs.working-directory }}
           set -o pipefail
-          go test ${{ inputs.test-flags }} $(go list ./... | grep -v integration | grep -v crds/generated) | grep -v 'no test files'
+          go test ${{ inputs.test-flags }} $(go list ./... | grep -v integration | grep -v crds/generated)
 
   run-linter:
     name: Run linter

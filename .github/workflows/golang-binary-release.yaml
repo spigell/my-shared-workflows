@@ -1,0 +1,51 @@
+name: The prebuilt binaries release
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        required: false
+        type: string
+        default: '.'
+    secrets:
+      gh-token:
+        required: true
+
+jobs:
+  goreleaser:
+    name: "Run Goreleaser"
+    runs-on: ubuntu-24.04
+    if: github.event.base_ref == ${{ github.event.repository.default_branch }}
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Act dependencies
+        if: ${{ env.ACT }}
+        uses: ./.github/actions/setup-act-env
+
+      - name: Checkout shared actions
+        uses: actions/checkout@v4
+        with:
+          repository: spigell/my-shared-workflows
+          path: .github/actions-temp
+
+      - name: Move actions into correct path
+        run: |
+          rsync -a .github/actions-temp/.github/actions/ .github/actions/
+
+      - name: Setup Go and install deps
+        uses: ./.github/actions/setup-go-env
+        with:
+          working-directory: ${{ inputs.working-directory }}
+
+      - name: Release required binaries
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser
+          args: release --clean --verbose
+          version: '2.11.0'
+          workdir: ${{ inputs.working-directory }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.gh-token }}

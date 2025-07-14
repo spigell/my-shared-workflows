@@ -1,0 +1,10 @@
+name: Setup act tools (for local development)
+description: Installs rsync when running in local environments like `act`
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install rsync if missing
+      shell: bash
+      run: |
+        sudo apt-get update && sudo apt-get install -y rsync

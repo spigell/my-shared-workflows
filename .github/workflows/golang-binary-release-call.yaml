@@ -1,0 +1,12 @@
+name: Local CI Release (Golang)
+
+on:
+  push:
+
+jobs:
+  test-workflow:
+    uses: ./.github/workflows/golang-binary-release.yaml
+    with:
+      working-directory: 'testdata/golang'
+    secrets:
+      gh-token: '1111'

@@ -3,10 +3,6 @@ name: Golang test and linting
 on:
   workflow_call:
     inputs:
-      go-version:
-        required: false
-        type: string
-        default: '1.22'
       test-flags:
         required: false
         type: string
@@ -27,6 +23,10 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install Act dependencies
+        if: ${{ env.ACT }}
+        uses: ./.github/actions/setup-act-env
 
       - name: Checkout shared actions
         uses: actions/checkout@v4
@@ -57,6 +57,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install Act dependencies
+        if: ${{ env.ACT }}
+        uses: ./.github/actions/setup-act-env
+
       - name: Checkout shared actions
         uses: actions/checkout@v4
         with:
@@ -70,7 +74,6 @@ jobs:
       - name: Setup Go and install deps
         uses: ./.github/actions/setup-go-env
         with:
-          go-version: ${{ inputs.go-version }}
           working-directory: ${{ inputs.working-directory }}
 
       - name: Run the golangci linter

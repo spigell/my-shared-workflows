@@ -2,10 +2,7 @@
 
 set -xe
 
-rsync -a .github/actions-temp/.github/actions/ .github/actions/
+COPY="setup-go-env"
 
-# Dummy commit
-git config user.email "ci@example.com"
-git config user.name "ci"
-git add .github
-git commit -m "Temporary commit for CI"
+rsync -a .github/actions-temp/.github/actions/${COPY} .github/actions/
+git update-index --assume-unchanged .github/actions/${COPY}/action.yaml

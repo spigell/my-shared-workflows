@@ -28,6 +28,7 @@ jobs:
       - name: Get actions
         run: |
           git clone --depth 1 --filter=blob:none --sparse "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" ../actions
+          ls -alht ../actions
 
       - name: Setup Go and install deps
         uses: ./../actions/.github/actions/setup-go-env

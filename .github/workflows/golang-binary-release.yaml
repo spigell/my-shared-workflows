@@ -25,18 +25,22 @@ jobs:
         if: ${{ env.ACT }}
         uses: ./.github/actions/setup-act-env
 
-      - name: Checkout shared actions
-        uses: actions/checkout@v4
-        with:
-          repository: spigell/my-shared-workflows
-          path: .github/actions-temp
-          ref: spigel/feat/add-go-build
+#      - name: Checkout shared actions
+#        uses: actions/checkout@v4
+#        with:
+#          repository: spigell/my-shared-workflows
+#j          path: .github/actions-temp
+#          ref: spigel/feat/add-go-build
 
-      - name: Copy actions into correct path
-        run: .github/actions-temp/ci-copy-actions.sh
+      - uses: wei18/local-composite-action@v1
+        with:
+          action_repository: spigell/my-shared-workflows
+
+#      - name: Copy actions into correct path
+#        run: .github/actions-temp/ci-copy-actions.sh
 
       - name: Setup Go and install deps
-        uses: ./.github/actions/setup-go-env
+        uses: ./../spigell/my-shared-workflows/.github/actions/setup-go-env
         with:
           working-directory: ${{ inputs.working-directory }}
 

@@ -28,8 +28,8 @@ jobs:
     if: ${{ github.event.base_ref }} == 'refs/heads/${{ github.event.repository.default_branch }}'
     steps:
       - if: ${{ github.event.base_ref }} == 'refs/heads/${{ github.event.repository.default_branch }}'
-        run: exit 1
-        
+        run: echo "${{ github.event.base_ref }} == refs/heads/${{ github.event.repository.default_branch }}" ; exit 1
+
       - uses: actions/checkout@v4
 
       - name: Install Act dependencies

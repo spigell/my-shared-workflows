@@ -25,24 +25,20 @@ jobs:
         if: ${{ env.ACT }}
         uses: ./.github/actions/setup-act-env
 
-#      - name: Checkout shared actions
-#        uses: actions/checkout@v4
-#        with:
-#          repository: spigell/my-shared-workflows
-#j          path: .github/actions-temp
-#          ref: spigel/feat/add-go-build
-
-      - name: Get actions
-        run: |
-          git clone --depth 1 --filter=blob:none --sparse "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" ../actions-temp
-
-#      - name: Copy actions into correct path
-#        run: .github/actions-temp/ci-copy-actions.sh
+      - name: Checkout shared actions
+        uses: actions/checkout@v4
+        with:
+          repository: spigell/my-shared-workflows
+          path: .github/actions-temp
+          ref: spigel/feat/add-go-build
 
       - name: Setup Go and install deps
-        uses: ../actions-temp/.github/actions/setup-go-env
+        uses: .github/actions-temp/.github/actions/setup-go-env
         with:
           working-directory: ${{ inputs.working-directory }}
+
+      - name: Clean
+        run: rm -rfv .github/actions-temp
 
       - name: Release required binaries
         uses: goreleaser/goreleaser-action@v6

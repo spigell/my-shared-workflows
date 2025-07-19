@@ -32,14 +32,15 @@ jobs:
 #j          path: .github/actions-temp
 #          ref: spigel/feat/add-go-build
 
-      - run: |
-              git clone --depth 1 --filter=blob:none --sparse "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" /tmp/actions-temp
+      - name: Get actions
+        run: |
+          git clone --depth 1 --filter=blob:none --sparse "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" ../actions-temp
 
 #      - name: Copy actions into correct path
 #        run: .github/actions-temp/ci-copy-actions.sh
 
       - name: Setup Go and install deps
-        uses: /tmp/actions-temp/.github/actions/setup-go-env
+        uses: ../actions-temp/.github/actions/setup-go-env
         with:
           working-directory: ${{ inputs.working-directory }}
 

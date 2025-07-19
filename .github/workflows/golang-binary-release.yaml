@@ -33,9 +33,9 @@ jobs:
           GITHUB_EVENT_REPOSITORY_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
           GITHUB_EVENT_BASE_REF: ${{ github.event.base_ref }}"
         run: |
-          node -e "
+          node -e '
             const ref = process.env.GITHUB_REF;
-            console.log('Current ref:', ref);
+            console.log("Current ref:", ref);
 
             const baseRef = process.env.GITHUB_EVENT_BASE_REF;
             const defaultBranch = process.env.GITHUB_EVENT_REPOSITORY_DEFAULT_BRANCH;
@@ -44,16 +44,17 @@ jobs:
             if (!isDefaultBranch) {
               console.log(`Not Valid: must be running on default branch (${defaultBranch})`);
               process.exit(1);
-            };
+            }
 
-            const isTag = ref.startsWith('refs/tags/');
+            const isTag = ref.startsWith("refs/tags/");
             if (!isTag) {
               console.log(`Not Valid: must be running on tag (${ref})`);
               process.exit(1);
-            };
+            }
 
-            console.log('✅ Valid ref:', ref);
-          "
+            console.log("✅ Valid ref:", ref);
+          '
+
 
       - uses: actions/checkout@v4
 

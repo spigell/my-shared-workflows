@@ -21,7 +21,7 @@ jobs:
           echo "ref = ${{ github.ref }}"
           echo "base_ref = ${{ github.event.base_ref }}"
           echo "default_branch = ${{ github.event.repository.default_branch }}"
-          echo "repo = ${{ fromJSON(github.event.repository) }}"
+          echo "repo = ${{ toJson(github.event.repository) }}"
 
   goreleaser:
     name: "Run Goreleaser"

@@ -12,18 +12,6 @@ on:
         required: true
 
 jobs:
-  branch-debug:
-    name: "Branch Debug"
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Debug refs
-        run: |
-          echo "ref = ${{ github.ref }}"
-          echo "base_ref = ${{ github.event.base_ref }}"
-          echo "default_branch = ${{ github.event.repository.default_branch }}"
-          echo "event = ${{ toJson(github.event) }}"
-          echo "repo = ${{ toJson(github.event.repository) }}"
-
   goreleaser:
     name: "Run Goreleaser"
     runs-on: ubuntu-24.04

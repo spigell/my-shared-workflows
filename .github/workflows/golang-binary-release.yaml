@@ -28,20 +28,22 @@ jobs:
     name: "Run Goreleaser"
     runs-on: ubuntu-24.04
     steps:
-      - name: Validate only default branch or tags
+      - name: Validate ref with Node.js
         run: |
-          ref="${{ github.ref }}"
-          default_branch="${{ github.event.repository.default_branch }}"
+          node -e "
+            const ref = process.env.GITHUB_REF;
+            const defaultBranch = process.env.GITHUB_EVENT_REPOSITORY_DEFAULT_BRANCH;
 
-          echo "Current ref: $ref"
-          echo "Default branch: $default_branch"
+            console.log('Current ref:', ref);
+            console.log('Default branch:', defaultBranch);
 
-          if [[ "$ref" != "refs/heads/$default_branch" && ! "$ref" =~ ^refs/tags/ ]]; then
-            echo "❌ Invalid ref: $ref. Only default branch ($default_branch) or tags allowed."
-            exit 1
-          fi
+            if (ref !== 'refs/heads/' + defaultBranch && !ref.startsWith('refs/tags/')) {
+              console.error('❌ Invalid ref:', ref);
+              process.exit(1);
+            }
 
-          echo "✅ Valid ref: $ref"
+            console.log('✅ Valid ref:', ref);
+          "
 
       - uses: actions/checkout@v4
 

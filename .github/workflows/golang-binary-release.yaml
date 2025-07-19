@@ -29,10 +29,10 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: spigell/my-shared-workflows
-          path: /tmp/actions-temp
+          path: .github/actions-temp
 
       - name: Copy actions into correct path
-        run: /tmp/actions-temp/ci-copy-actions.sh
+        run: .github/actions-temp/ci-copy-actions.sh
 
       - name: Setup Go and install deps
         uses: ./.github/actions/setup-go-env

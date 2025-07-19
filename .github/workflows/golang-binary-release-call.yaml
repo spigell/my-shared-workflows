@@ -6,6 +6,8 @@ on:
 jobs:
   test-workflow:
     uses: ./.github/workflows/golang-binary-release.yaml
+    permissions:
+      contents: write
     with:
       working-directory: 'testdata/golang'
     secrets:

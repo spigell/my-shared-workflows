@@ -29,15 +29,19 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Validate ref with Node.js
+        env:
+          GITHUB_EVENT_REPOSITORY_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          GITHUB_EVENT_BASE_REF: ${{ github.event.base_ref }}"
         run: |
           node -e "
             const ref = process.env.GITHUB_REF;
+            const baseRef = process.env.GITHUB_EVENT_BASE_REF;
             const defaultBranch = process.env.GITHUB_EVENT_REPOSITORY_DEFAULT_BRANCH;
 
             console.log('Current ref:', ref);
             console.log('Default branch:', defaultBranch);
 
-            if (ref !== 'refs/heads/' + defaultBranch && !ref.startsWith('refs/tags/')) {
+            if (baseRef !== 'refs/heads/' + defaultBranch && !ref.startsWith('refs/tags/')) {
               console.error('❌ Invalid ref:', ref);
               process.exit(1);
             }

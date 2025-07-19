@@ -32,15 +32,14 @@ jobs:
 #j          path: .github/actions-temp
 #          ref: spigel/feat/add-go-build
 
-      - uses: wei18/local-composite-action@v1
-        with:
-          action_repository: spigell/my-shared-workflows
+      - run: |
+              git clone --depth 1 --filter=blob:none --sparse "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" /tmp/actions-temp
 
 #      - name: Copy actions into correct path
 #        run: .github/actions-temp/ci-copy-actions.sh
 
       - name: Setup Go and install deps
-        uses: ./../spigell/my-shared-workflows/.github/actions/setup-go-env
+        uses: /tmp/actions-temp/.github/actions/setup-go-env
         with:
           working-directory: ${{ inputs.working-directory }}
 

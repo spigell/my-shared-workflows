@@ -30,6 +30,7 @@ jobs:
         with:
           repository: spigell/my-shared-workflows
           path: .github/actions-temp
+          ref: spigel/feat/add-go-build
 
       - name: Copy actions into correct path
         run: .github/actions-temp/ci-copy-actions.sh

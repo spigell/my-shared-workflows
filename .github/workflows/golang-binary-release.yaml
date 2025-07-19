@@ -26,7 +26,8 @@ jobs:
     name: "Run Goreleaser"
     runs-on: ubuntu-24.04
     # if: github.event.base_ref == ${{ github.event.repository.default_branch }}
-    if: github.ref == 'refs/heads/${{ github.event.repository.default_branch }}'
+    # if: github.ref == 'refs/heads/${{ github.event.repository.default_branch }}'
+    if: ${{ cancelled() }}
     steps:
       - uses: actions/checkout@v4
 

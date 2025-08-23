@@ -1,4 +1,4 @@
-name: Golang test and linting
+name: Golang Pulumi Test and Linting
 
 on:
   workflow_call:
@@ -24,24 +24,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Get actions
+        run: |
+          git clone "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ../actions
+
       - name: Install Act dependencies
         if: ${{ env.ACT }}
         uses: ./.github/actions/setup-act-env
 
-      - name: Checkout shared actions
-        uses: actions/checkout@v4
-        with:
-          repository: spigell/my-shared-workflows
-          path: .github/actions-temp
-
-      - name: Move actions into correct path
-        run: |
-          rsync -a .github/actions-temp/.github/actions/ .github/actions/
-
       - name: Setup Go and install deps
-        uses: ./.github/actions/setup-go-env
+        if: ${{ env.ACT }}
+        uses: ./.github/actions/setup-pulumi-env
         with:
-          go-version: ${{ inputs.go-version }}
+          runtime: go
+          working-directory: ${{ inputs.working-directory }}
+
+      # https://github.com/nektos/act/pull/2108
+      # We can not use ACT with actions outside of workspace
+      - name: Setup Go and install deps
+        if: ${{ !env.ACT }}
+        uses: ./../actions/.github/actions/setup-pulumi-env
+        with:
+          runtime: go
           working-directory: ${{ inputs.working-directory }}
 
       - name: Run unit tests
@@ -57,17 +61,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Get actions
-        run: |
-          git clone "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ../actions
-
       - name: Install Act dependencies
         if: ${{ env.ACT }}
         uses: ./.github/actions/setup-act-env
 
+      - name: Get actions
+        if: ${{ !env.ACT }}
+        run: |
+          git clone "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ../actions
+
       - name: Setup Go and install deps
-        uses: ./../actions/.github/actions/setup-go-env
+        if: ${{ !env.ACT }}
+        uses: ./../actions/.github/actions/setup-pulumi-env
         with:
+          runtime: go
+          working-directory: ${{ inputs.working-directory }}
+
+      - name: Setup Go and install deps
+        if: ${{ env.ACT }}
+        uses: ./.github/actions/setup-pulumi-env
+        with:
+          runtime: go
           working-directory: ${{ inputs.working-directory }}
 
       - name: Run the golangci linter

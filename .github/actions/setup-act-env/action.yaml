@@ -4,7 +4,8 @@ description: Installs rsync when running in local environments like `act`
 runs:
   using: "composite"
   steps:
-    - name: Install rsync if missing
+    - name: Prepare environment
       shell: bash
       run: |
-        sudo apt-get update && sudo apt-get install -y rsync
+        echo 'not required yet'
+

@@ -1,0 +1,10 @@
+name: Local Pulumi CI Test (Golang)
+
+on:
+  push:
+
+jobs:
+  test-workflow:
+    uses: ./.github/workflows/golang-pulumi-test-lint.yaml
+    with:
+      working-directory: 'testdata/golang'

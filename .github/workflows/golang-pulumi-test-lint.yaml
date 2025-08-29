@@ -24,26 +24,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Get actions
-        run: |
-          git clone "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ../actions
-
       - name: Install Act dependencies
         if: ${{ env.ACT }}
         uses: ./.github/actions/setup-act-env
 
-      - name: Setup Go and install deps
-        if: ${{ env.ACT }}
-        uses: ./.github/actions/setup-pulumi-env
+      - name: Checkout shared actions
+        uses: actions/checkout@v4
         with:
-          runtime: go
-          working-directory: ${{ inputs.working-directory }}
+          repository: spigell/my-shared-workflows
+          path: .github/actions-temp
 
-      # https://github.com/nektos/act/pull/2108
-      # We can not use ACT with actions outside of workspace
+      - name: Move actions into correct path
+        run: |
+          rsync -a .github/actions-temp/.github/actions/ .github/actions/
+
       - name: Setup Go and install deps
-        if: ${{ !env.ACT }}
-        uses: ./../actions/.github/actions/setup-pulumi-env
+        uses: ./.github/actions/setup-pulumi-env
         with:
           runtime: go
           working-directory: ${{ inputs.working-directory }}
@@ -65,20 +61,17 @@ jobs:
         if: ${{ env.ACT }}
         uses: ./.github/actions/setup-act-env
 
-      - name: Get actions
-        if: ${{ !env.ACT }}
-        run: |
-          git clone "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ../actions
-
-      - name: Setup Go and install deps
-        if: ${{ !env.ACT }}
-        uses: ./../actions/.github/actions/setup-pulumi-env
+      - name: Checkout shared actions
+        uses: actions/checkout@v4
         with:
-          runtime: go
-          working-directory: ${{ inputs.working-directory }}
+          repository: spigell/my-shared-workflows
+          path: .github/actions-temp
+
+      - name: Move actions into correct path
+        run: |
+          rsync -a .github/actions-temp/.github/actions/ .github/actions/
 
       - name: Setup Go and install deps
-        if: ${{ env.ACT }}
         uses: ./.github/actions/setup-pulumi-env
         with:
           runtime: go

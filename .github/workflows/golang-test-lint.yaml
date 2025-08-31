@@ -23,26 +23,13 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - name: Checkout shared actions for act
-        if: ${{ env.ACT }}
-        uses: actions/checkout@v4
-        with:
-          repository: spigell/my-shared-workflows
-          path: .github/actions-temp
-
-      - name: Move actions into workspace
-        if: ${{ env.ACT }}
+      - name: Get actions
         run: |
-          rsync -a .github/actions-temp/.github/actions/ .github/actions/
+          git clone "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ../actions
 
       - name: Install Act dependencies
         if: ${{ env.ACT }}
         uses: ./.github/actions/setup-act-env
-
-      - name: Get shared actions
-        if: ${{ !env.ACT }}
-        run: |
-          git clone "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ../actions
 
       - name: Setup Go and install deps
         if: ${{ env.ACT }}
@@ -51,6 +38,8 @@ jobs:
           go-version: ${{ inputs.go-version }}
           working-directory: ${{ inputs.working-directory }}
 
+      # https://github.com/nektos/act/pull/2108
+      # We can not use ACT with actions outside of workspace
       - name: Setup Go and install deps
         if: ${{ !env.ACT }}
         uses: ./../actions/.github/actions/setup-go-env
@@ -70,26 +59,13 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - name: Checkout shared actions for act
-        if: ${{ env.ACT }}
-        uses: actions/checkout@v4
-        with:
-          repository: spigell/my-shared-workflows
-          path: .github/actions-temp
-
-      - name: Move actions into workspace
-        if: ${{ env.ACT }}
+      - name: Get actions
         run: |
-          rsync -a .github/actions-temp/.github/actions/ .github/actions/
+          git clone "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ../actions
 
       - name: Install Act dependencies
         if: ${{ env.ACT }}
         uses: ./.github/actions/setup-act-env
-
-      - name: Get shared actions
-        if: ${{ !env.ACT }}
-        run: |
-          git clone "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ../actions
 
       - name: Setup Go and install deps
         if: ${{ env.ACT }}
@@ -97,6 +73,8 @@ jobs:
         with:
           working-directory: ${{ inputs.working-directory }}
 
+      # https://github.com/nektos/act/pull/2108
+      # We can not use ACT with actions outside of workspace
       - name: Setup Go and install deps
         if: ${{ !env.ACT }}
         uses: ./../actions/.github/actions/setup-go-env

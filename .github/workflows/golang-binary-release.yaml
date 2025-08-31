@@ -21,6 +21,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Validate ref
+        if: ${{ !env.ACT }}
         env:
           GITHUB_EVENT_REPOSITORY_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
           GITHUB_EVENT_BASE_REF: ${{ github.event.base_ref }}
@@ -56,6 +57,12 @@ jobs:
       - name: Install Act dependencies
         if: ${{ env.ACT }}
         uses: ./.github/actions/setup-act-env
+
+      # Ignore the external actions folder so the tree stays clean for GoReleaser
+      - name: Ignore external actions folder
+        run: |
+          echo ".github/actions_ext" >> .git/info/exclude
+          git status --porcelain
 
       - name: Setup Basic env
         if: ${{ inputs.setup-action == 'setup-go-env' }}

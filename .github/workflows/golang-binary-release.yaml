@@ -44,23 +44,36 @@ jobs:
           '
 
       - uses: actions/checkout@v4
-
-      - name: Install Act dependencies
+      - name: Checkout shared actions for act
         if: ${{ env.ACT }}
-        uses: ./.github/actions/setup-act-env
-
-      - name: Checkout shared actions
         uses: actions/checkout@v4
         with:
           repository: spigell/my-shared-workflows
           path: .github/actions-temp
 
-      - name: Move actions into correct path
+      - name: Move actions into workspace
+        if: ${{ env.ACT }}
         run: |
           rsync -a .github/actions-temp/.github/actions/ .github/actions/
 
+      - name: Install Act dependencies
+        if: ${{ env.ACT }}
+        uses: ./.github/actions/setup-act-env
+
+      - name: Get shared actions
+        if: ${{ !env.ACT }}
+        run: |
+          git clone "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ../actions
+
       - name: Setup Go and install deps
+        if: ${{ env.ACT }}
         uses: ./.github/actions/setup-go-env
+        with:
+          working-directory: ${{ inputs.working-directory }}
+
+      - name: Setup Go and install deps
+        if: ${{ !env.ACT }}
+        uses: ./../actions/.github/actions/setup-go-env
         with:
           working-directory: ${{ inputs.working-directory }}
 

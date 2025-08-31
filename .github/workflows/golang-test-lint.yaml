@@ -54,6 +54,13 @@ jobs:
           cd ${{ inputs.working-directory }}
           set -o pipefail
           go test ${{ inputs.test-flags }} $(go list ./... | grep -v integration | grep -v crds/generated)
+          pkgs=$(go list ./... | grep -v integration | grep -v crds/generated || true)
+          echo "Allowed packages: $pkgs"
+          if [ -n "$pkgs" ]; then
+            go test ${{ inputs.test-flags }} $pkgs
+          else
+            echo "No packages to test, skipping."
+          fi
         
 
   run-linter:

@@ -2,6 +2,8 @@ name: Local CI Release (Golang)
 
 on:
   push:
+    tags:
+      - '*'
 
 jobs:
   test-workflow:

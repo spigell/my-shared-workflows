@@ -1,0 +1,62 @@
+name: prepare-pulumi-ci
+description: "Setup environment and Pulumi stack for CI/CD pipelines"
+
+inputs:
+  runtime:
+    description: "Runtime to install (go,nodejs,etc)"
+    required: false
+    default: ''
+  working-directory:
+    description: Directory containing go.mod
+    required: true
+    default: 'provider'
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        fetch-tags: true
+
+    - name: Setup cache
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('${{ inputs.working-directory }}/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-${{ hashFiles('${{ inputs.working-directory }}/go.sum') }}
+
+    - name: Setup Go
+      uses: actions/setup-go@v5
+      with:
+        go-version-file: ${{ inputs.working-directory }}/go.mod
+        cache: false
+
+    - name: Setup Node LTS
+      uses: actions/setup-node@v4
+      if: ${{ contains(inputs.runtime, 'nodejs') }}
+      with:
+        node-version: 22
+
+    - name: Install pulumictl
+      uses: jaxxstorm/action-install-gh-release@v2.1.0
+      with:
+        repo: pulumi/pulumictl
+        tag: v0.0.49
+
+    - name: Install Pulumi CLI
+      uses: pulumi/actions@v4
+      with:
+        pulumi-version: v3.171.0
+
+    - name: Generate schema
+      run: make generate_schema
+      shell: bash
+
+    - name: Generate NodeJS SDK
+      if: ${{ contains(inputs.runtime, 'nodejs') }}
+      run: make install_nodejs_sdk
+      shell: bash

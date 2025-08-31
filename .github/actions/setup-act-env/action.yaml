@@ -1,0 +1,13 @@
+name: Setup act tools (for local development)
+description: Installs rsync when running in local environments like `act`
+
+runs:
+  using: "composite"
+  steps:
+    - name: Prepare environment
+      shell: bash
+      run: |
+        mkdir -p ./.github/actions_ext/.github/actions
+        cp -vr ./.github/actions ./.github/actions_ext/.github
+
+

@@ -3,10 +3,6 @@ name: Golang test and linting
 on:
   workflow_call:
     inputs:
-      go-version:
-        required: false
-        type: string
-        default: '1.22'
       test-flags:
         required: false
         type: string
@@ -19,6 +15,10 @@ on:
         required: false
         type: boolean
         default: false
+      setup-action:
+        required: false
+        type: string
+        default: 'setup-go-env'
 
 
 jobs:
@@ -27,21 +27,26 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-
-      - name: Checkout shared actions
-        uses: actions/checkout@v4
-        with:
-          repository: spigell/my-shared-workflows
-          path: .github/actions-temp
-
-      - name: Move actions into correct path
+      - name: Get actions
+        if: ${{ !env.ACT }}
         run: |
-          rsync -a .github/actions-temp/.github/actions/ .github/actions/
+          git clone "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ./.github/actions_ext
 
-      - name: Setup Go and install deps
-        uses: ./.github/actions/setup-go-env
+      - name: Install Act dependencies
+        if: ${{ env.ACT }}
+        uses: ./.github/actions/setup-act-env
+
+      - name: Setup Basic env
+        if: ${{ inputs.setup-action == 'setup-go-env' }}
+        uses: ./.github/actions_ext/.github/actions/setup-go-env
         with:
-          go-version: ${{ inputs.go-version }}
+          working-directory: ${{ inputs.working-directory }}
+
+      - name: Setup Pulumi Go env
+        if: ${{ inputs.setup-action == 'setup-pulumi-env' }}
+        uses: ./.github/actions_ext/.github/actions/setup-pulumi-env
+        with:
+          runtime: go
           working-directory: ${{ inputs.working-directory }}
 
       - name: Run unit tests
@@ -49,6 +54,7 @@ jobs:
           cd ${{ inputs.working-directory }}
           set -o pipefail
           go test ${{ inputs.test-flags }} $(go list ./... | grep -v integration | grep -v crds/generated)
+        
 
   run-linter:
     name: Run linter
@@ -56,21 +62,26 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-
-      - name: Checkout shared actions
-        uses: actions/checkout@v4
-        with:
-          repository: spigell/my-shared-workflows
-          path: .github/actions-temp
-
-      - name: Move actions into correct path
+      - name: Get actions
+        if: ${{ !env.ACT }}
         run: |
-          rsync -a .github/actions-temp/.github/actions/ .github/actions/
+          git clone "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ./.github/actions_ext
 
-      - name: Setup Go and install deps
-        uses: ./.github/actions/setup-go-env
+      - name: Install Act dependencies
+        if: ${{ env.ACT }}
+        uses: ./.github/actions/setup-act-env
+
+      - name: Setup Basic env
+        if: ${{ inputs.setup-action == 'setup-go-env' }}
+        uses: ./.github/actions_ext/.github/actions/setup-go-env
         with:
-          go-version: ${{ inputs.go-version }}
+          working-directory: ${{ inputs.working-directory }}
+
+      - name: Setup Pulumi Go env
+        if: ${{ inputs.setup-action == 'setup-pulumi-env' }}
+        uses: ./.github/actions_ext/.github/actions/setup-pulumi-env
+        with:
+          runtime: go
           working-directory: ${{ inputs.working-directory }}
 
       - name: Run the golangci linter

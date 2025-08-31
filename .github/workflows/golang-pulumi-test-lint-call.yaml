@@ -5,6 +5,7 @@ on:
 
 jobs:
   test-workflow:
-    uses: ./.github/workflows/golang-pulumi-test-lint.yaml
+    uses: ./.github/workflows/golang-test-lint.yaml
     with:
+      setup-action: 'setup-pulumi-env'
       working-directory: 'testdata/golang'

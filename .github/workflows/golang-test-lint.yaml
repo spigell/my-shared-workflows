@@ -15,6 +15,10 @@ on:
         required: false
         type: boolean
         default: false
+      setup-action:
+        required: false
+        type: string
+        default: 'setup-go-env'
 
 
 jobs:
@@ -24,27 +28,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Get actions
+        if: ${{ !env.ACT }}
         run: |
-          git clone "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ../actions
+          git clone "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ./.github/actions_ext
 
       - name: Install Act dependencies
         if: ${{ env.ACT }}
         uses: ./.github/actions/setup-act-env
 
-      - name: Setup Go and install deps
-        if: ${{ env.ACT }}
-        uses: ./.github/actions/setup-go-env
+      - name: Setup Basic env
+        if: ${{ inputs.setup-action == 'setup-go-env' }}
+        uses: ./.github/actions_ext/.github/actions/setup-go-env
         with:
-          go-version: ${{ inputs.go-version }}
           working-directory: ${{ inputs.working-directory }}
 
-      # https://github.com/nektos/act/pull/2108
-      # We can not use ACT with actions outside of workspace
-      - name: Setup Go and install deps
-        if: ${{ !env.ACT }}
-        uses: ./../actions/.github/actions/setup-go-env
+      - name: Setup Pulumi Go env
+        if: ${{ inputs.setup-action == 'setup-pulumi-env' }}
+        uses: ./.github/actions_ext/.github/actions/setup-pulumi-env
         with:
-          go-version: ${{ inputs.go-version }}
+          runtime: go
           working-directory: ${{ inputs.working-directory }}
 
       - name: Run unit tests
@@ -52,6 +54,7 @@ jobs:
           cd ${{ inputs.working-directory }}
           set -o pipefail
           go test ${{ inputs.test-flags }} $(go list ./... | grep -v integration | grep -v crds/generated)
+        
 
   run-linter:
     name: Run linter
@@ -60,25 +63,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Get actions
+        if: ${{ !env.ACT }}
         run: |
-          git clone "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ../actions
+          git clone "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ./.github/actions_ext
 
       - name: Install Act dependencies
         if: ${{ env.ACT }}
         uses: ./.github/actions/setup-act-env
 
-      - name: Setup Go and install deps
-        if: ${{ env.ACT }}
-        uses: ./.github/actions/setup-go-env
+      - name: Setup Basic env
+        if: ${{ inputs.setup-action == 'setup-go-env' }}
+        uses: ./.github/actions_ext/.github/actions/setup-go-env
         with:
           working-directory: ${{ inputs.working-directory }}
 
-      # https://github.com/nektos/act/pull/2108
-      # We can not use ACT with actions outside of workspace
-      - name: Setup Go and install deps
-        if: ${{ !env.ACT }}
-        uses: ./../actions/.github/actions/setup-go-env
+      - name: Setup Pulumi Go env
+        if: ${{ inputs.setup-action == 'setup-pulumi-env' }}
+        uses: ./.github/actions_ext/.github/actions/setup-pulumi-env
         with:
+          runtime: go
           working-directory: ${{ inputs.working-directory }}
 
       - name: Run the golangci linter

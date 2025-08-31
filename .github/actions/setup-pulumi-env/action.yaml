@@ -7,8 +7,8 @@ inputs:
     required: false
     default: ''
   working-directory:
-    description: "Runtime to install (go,nodejs,etc)"
-    required: false
+    description: Directory containing go.mod
+    required: true
     default: 'provider'
 
 runs:

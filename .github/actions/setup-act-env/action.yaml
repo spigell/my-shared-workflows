@@ -7,5 +7,7 @@ runs:
     - name: Prepare environment
       shell: bash
       run: |
-        echo 'not required yet'
+        mkdir -p ./.github/actions_ext/.github/actions
+        cp -vr ./.github/actions ./.github/actions_ext/.github
+
 

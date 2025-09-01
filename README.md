@@ -1,6 +1,6 @@
 # Shared GitHub Workflows
 
-Reusable GitHub Actions workflows and composite actions for Go (Golang) and TypeScript projects.
+Reusable GitHub Actions workflows and composite actions for Go (Golang) and NodeJS/TypeScript projects.
 
 ## 📁 Structure
 ```
@@ -22,6 +22,13 @@ jobs:
     with:
       go-version: '1.22'
       working-directory: '.'
+  release:
+    uses: your-org/shared-workflows/.github/workflows/npm-package-release.yaml@main
+    with:
+      working-directory: '.'
+      platform: npm
+    secrets:
+      gh-token: ${{ secrets.NPM_TOKEN }}
 ```
 
 🧪 Local Testing

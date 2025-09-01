@@ -1,0 +1,22 @@
+name: Local CI NPM package Release (NPM/Github)
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  npm-pulumi-release:
+    uses: ./.github/workflows/npm-package-release.yaml
+    with:
+      setup-action: setup-pulumi-env
+      working-directory: 'testdata/nodejs'
+    secrets:
+      gh-token: '1111'
+  gcr-release:
+    uses: ./.github/workflows/npm-package-release.yaml
+    with:
+      platform: github
+      working-directory: 'testdata/nodejs'
+    secrets:
+      gh-token: '1111'

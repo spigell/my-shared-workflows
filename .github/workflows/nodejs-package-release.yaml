@@ -1,4 +1,4 @@
-name: The prebuilt binaries release
+name: The NPM package uploading
 
 on:
   workflow_call:
@@ -10,18 +10,30 @@ on:
       setup-action:
         required: false
         type: string
-        default: 'setup-go-env'
-      config-path:
+        default: 'setup-node-env'
+      platform:
         required: false
         type: string
-        default: .goreleaser.yaml
+        default: 'npm'
+      package-directory:
+        required: false
+        type: string
+        default: '.'
+      build-command:
+        required: false
+        type: string
+        default: 'npm install'
+      dry-run:
+        required: false
+        type: boolean
+        default: false
     secrets:
-      gh-token:
+      token:
         required: true
 
 jobs:
-  goreleaser:
-    name: "Run Goreleaser"
+  run-release:
+    name: "Release NodeJS package"
     runs-on: ubuntu-24.04
     steps:
       - name: Validate ref
@@ -66,31 +78,33 @@ jobs:
         if: ${{ env.ACT }}
         uses: ./.github/actions/setup-act-env
 
-      # Ignore the external actions folder so the tree stays clean for GoReleaser
-      - name: Ignore external actions folder
-        run: |
-          echo ".github/actions_ext" >> .git/info/exclude
-          git status --porcelain
-
-      - name: Setup Basic env
-        if: ${{ inputs.setup-action == 'setup-go-env' }}
-        uses: ./.github/actions_ext/.github/actions/setup-go-env
+      - name: Setup Node env
+        if: ${{ inputs.setup-action == 'setup-node-env' }}
+        uses: actions/setup-node@v4
         with:
-          working-directory: ${{ inputs.working-directory }}
+          node-version: 22
 
-      - name: Setup Pulumi Go env
+      - name: Setup Pulumi env
         if: ${{ inputs.setup-action == 'setup-pulumi-env' }}
         uses: ./.github/actions_ext/.github/actions/setup-pulumi-env
         with:
-          runtime: go
+          runtime: nodejs
           working-directory: ${{ inputs.working-directory }}
 
-      - name: Release required binaries
-        uses: goreleaser/goreleaser-action@v6
+      - name: Generate nodejs sdk package
+        working-directory: ${{ inputs.working-directory }}
+        run: ${{ inputs.build-command }}
+
+      - name: set version
+        if: ${{ inputs.platform == 'github' }}
+        run: |
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.token }}" > .npmrc
+          echo "@spigell:registry=https://npm.pkg.github.com" >> .npmrc
+          mv ./.npmrc ${{ inputs.package-directory }}/.npmrc -v
+
+      - name: Publish package to the registry
+        uses: JS-DevTools/npm-publish@v3
         with:
-          distribution: goreleaser
-          args: release --clean --verbose --config ${{ inputs.config-path }}
-          version: '2.11.0'
-          workdir: ${{ inputs.working-directory }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.gh-token }}
+          package: ${{ inputs.package-directory }}
+          token: ${{ secrets.token }}
+          dry-run: ${{ inputs.dry-run }}

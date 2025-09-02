@@ -1,6 +1,6 @@
 # Shared GitHub Workflows
 
-Reusable GitHub Actions workflows and composite actions for Go (Golang) and TypeScript projects.
+Reusable GitHub Actions workflows and composite actions for Go (Golang) and NodeJS/TypeScript projects.
 
 ## 📁 Structure
 ```
@@ -22,13 +22,18 @@ jobs:
     with:
       go-version: '1.22'
       working-directory: '.'
+  release:
+    uses: your-org/shared-workflows/.github/workflows/npm-package-release.yaml@main
+    with:
+      working-directory: '.'
+      platform: npm
+    secrets:
+      token: ${{ secrets.NPM_TOKEN }}
 ```
 
 🧪 Local Testing
 
 Test with act:
 ```
-act workflow_dispatch \
-  -W .github/workflows/golang-test-call.yaml \
-  -P ubuntu-24.04=ghcr.io/catthehacker/ubuntu:act-24.04
+act -W  ./.github/workflows/nodejs-package-release.yaml --input working-directory=./testdata/nodejs -P ubuntu-24.04=ghcr.io/catthehacker/ubuntu:act-24.04 --secret token=1111 --input package-directory=./testdata/nodejs --input dry-run=true --input setup-action=setup-pulumi-env
 ```

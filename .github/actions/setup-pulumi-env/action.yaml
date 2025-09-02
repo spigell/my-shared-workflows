@@ -24,10 +24,18 @@ runs:
         restore-keys: |
           ${{ runner.os }}-go-${{ hashFiles('${{ inputs.working-directory }}/go.sum') }}
 
-    - name: Setup Go
+    - name: Setup Go for Go runtime (based on go.mod file)
       uses: actions/setup-go@v5
+      if: ${{ contains(inputs.runtime, 'go') }}
       with:
         go-version-file: ${{ inputs.working-directory }}/go.mod
+        cache: false
+
+    - name: Setup Go for non Go runtimes
+      uses: actions/setup-go@v5
+      if: ${{ contains(inputs.runtime, 'nodejs') }}
+      with:
+        go-version: stable
         cache: false
 
     - name: Setup Node LTS

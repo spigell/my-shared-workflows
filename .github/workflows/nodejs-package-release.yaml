@@ -15,12 +15,24 @@ on:
         required: false
         type: string
         default: 'npm'
+      package-directory:
+        required: false
+        type: string
+        default: '.'
+      build-command:
+        required: false
+        type: string
+        default: 'npm install'
+      dry-run:
+        required: false
+        type: boolean
+        default: false
     secrets:
-      gh-token:
+      token:
         required: true
 
 jobs:
-  release:
+  run-release:
     name: "Release NodeJS package"
     runs-on: ubuntu-24.04
     steps:
@@ -66,22 +78,11 @@ jobs:
         if: ${{ env.ACT }}
         uses: ./.github/actions/setup-act-env
 
-      - name: Ignore external actions folder
-        run: |
-          echo ".github/actions_ext" >> .git/info/exclude
-          git status --porcelain
-
       - name: Setup Node env
         if: ${{ inputs.setup-action == 'setup-node-env' }}
         uses: actions/setup-node@v4
         with:
           node-version: 22
-
-      - name: Setup Go env
-        if: ${{ inputs.setup-action == 'setup-go-env' }}
-        uses: ./.github/actions_ext/.github/actions/setup-go-env
-        with:
-          working-directory: ${{ inputs.working-directory }}
 
       - name: Setup Pulumi env
         if: ${{ inputs.setup-action == 'setup-pulumi-env' }}
@@ -90,21 +91,20 @@ jobs:
           runtime: nodejs
           working-directory: ${{ inputs.working-directory }}
 
-      - name: Build package
-        run: npm pack
+      - name: Generate nodejs sdk package
         working-directory: ${{ inputs.working-directory }}
+        run: ${{ inputs.build-command }}
 
-      - name: Publish package to npm
-        if: ${{ inputs.platform == 'npm' }}
-        uses: JS-DevTools/npm-publish@v3
-        with:
-          package: ${{ inputs.working-directory }}
-          token: ${{ secrets.gh-token }}
-          dry-run: false
-
-      - name: Publish package to GitHub Packages
+      - name: set version
         if: ${{ inputs.platform == 'github' }}
         run: |
-          npm config set '//npm.pkg.github.com/:_authToken' '${{ secrets.gh-token }}'
-          npm publish --registry https://npm.pkg.github.com
-        working-directory: ${{ inputs.working-directory }}
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.token }}" > .npmrc
+          echo "@spigell:registry=https://npm.pkg.github.com" >> .npmrc
+          mv ./.npmrc ${{ inputs.package-directory }}/.npmrc -v
+
+      - name: Publish package to the registry
+        uses: JS-DevTools/npm-publish@v3
+        with:
+          package: ${{ inputs.package-directory }}
+          token: ${{ secrets.token }}
+          dry-run: ${{ inputs.dry-run }}

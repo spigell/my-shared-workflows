@@ -1,5 +1,5 @@
 {
-  "name": "@example/testdata-node",
+  "name": "@spigell/example-package",
   "version": "1.0.0",
   "description": "Test NodeJS package for shared workflows",
   "type": "module",

@@ -59,8 +59,3 @@ runs:
       run: make generate_schema
       working-directory: ${{ inputs.working-directory }}
       shell: bash
-
-    - name: Generate NodeJS SDK
-      if: ${{ contains(inputs.runtime, 'nodejs') }}
-      run: make install_nodejs_sdk
-      shell: bash

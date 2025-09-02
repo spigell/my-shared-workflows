@@ -95,12 +95,11 @@ jobs:
         working-directory: ${{ inputs.working-directory }}
         run: ${{ inputs.build-command }}
 
-      - name: set version
+      - name: Configure npmrc for Github registry
         if: ${{ inputs.platform == 'github' }}
         run: |
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.token }}" > .npmrc
-          echo "@spigell:registry=https://npm.pkg.github.com" >> .npmrc
-          mv ./.npmrc ${{ inputs.package-directory }}/.npmrc -v
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.token }}" > ${{ inputs.package-directory }}/.npmrc
+          echo "@spigell:registry=https://npm.pkg.github.com" >> ${{ inputs.package-directory }}/.npmrc
 
       - name: Publish package to the registry
         uses: JS-DevTools/npm-publish@v3

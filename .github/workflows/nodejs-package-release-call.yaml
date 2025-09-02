@@ -9,15 +9,18 @@ jobs:
   npm-pulumi-release:
     uses: ./.github/workflows/nodejs-package-release.yaml
     with:
+      working-directory: 'testdata/nodejs'
+      package-directory: 'testdata/nodejs'
       setup-action: setup-pulumi-env
       dry-run: true
-      working-directory: 'testdata/nodejs'
     secrets:
-      token: '1111'
+      token: '555'
   gcr-release:
     uses: ./.github/workflows/nodejs-package-release.yaml
     with:
-      platform: github
       working-directory: 'testdata/nodejs'
+      package-directory: 'testdata/nodejs'
+      platform: github
+      dry-run: true
     secrets:
-      token: '1111'
+      token: '555'

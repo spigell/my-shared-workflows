@@ -1,0 +1,17 @@
+name: Local CI Release (Docker)
+
+on:
+  push:
+
+jobs:
+  basic-release:
+    uses: ./.github/workflows/docker-build-release.yaml
+    with:
+      image-name: golang-test-relase
+      dry-run: true
+      context: ./testdata/golang
+      dockerfile: ./testdata/golang/Dockerfile
+      version: v0.1.0
+      build-args: |
+        GO_VERSION=1.25
+

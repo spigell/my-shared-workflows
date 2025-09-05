@@ -20,6 +20,12 @@ on:
         required: false
         type: boolean
         default: false
+    outputs:
+      version:
+        value: ${{ inputs.version }}
+      sha-tag:
+        description: "The image version that was built"
+        value: ${{ inputs.version }}-${{ steps.short-sha.outputs.sha }}
 
 jobs:
   build:

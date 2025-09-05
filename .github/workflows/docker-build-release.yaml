@@ -25,11 +25,13 @@ on:
         value: ${{ inputs.version }}
       sha-tag:
         description: "The image version that was built"
-        value: ${{ inputs.version }}-${{ steps.short-sha.outputs.sha }}
+        value: ${{ inputs.version }}-${{ jobs.build.outputs.short-sha }}
 
 jobs:
   build:
     runs-on: ubuntu-24.04
+    outputs:
+      short-sha: ${{ steps.short-sha.outputs.sha }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

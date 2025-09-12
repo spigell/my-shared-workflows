@@ -6,9 +6,13 @@ inputs:
     description: "Runtime to install (go,nodejs,etc)"
     required: false
     default: ''
+  pulumi-version-file:
+    description: Path to pulumi version file
+    required: false
+    default: '.pulumi.version'
   working-directory:
     description: Directory containing go.mod
-    required: true
+    required: false
     default: 'provider'
 
 runs:
@@ -53,7 +57,7 @@ runs:
     - name: Install Pulumi CLI
       uses: pulumi/actions@v4
       with:
-        pulumi-version: v3.192.0
+        pulumi-version-file: ${{ inputs.pulumi-version-file }}
 
     - name: Generate schema
       run: make generate_schema

@@ -12,4 +12,5 @@ jobs:
     uses: ./.github/workflows/golang-test-lint.yaml
     with:
       setup-action: 'setup-pulumi-env'
+      pulumi-version-file: testdata/golang/.pulumi.version
       working-directory: 'testdata/golang'

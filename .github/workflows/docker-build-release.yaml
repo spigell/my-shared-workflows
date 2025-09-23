@@ -27,14 +27,15 @@ on:
         description: "The image version that was built"
         value: ${{ inputs.version }}-${{ jobs.build.outputs.short-sha }}
       digest:
-        description: Metadata for built image
-        value: ${{ jobs.build.outputs.docker.digest }}
+        description: Digest for built image
+        value: ${{ jobs.build.outputs.digest }}
 
 jobs:
   build:
     runs-on: ubuntu-24.04
     outputs:
       short-sha: ${{ steps.short-sha.outputs.sha }}
+      digest: ${{ steps.docker.outputs.digest }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -56,7 +57,7 @@ jobs:
 
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
-        id: build-docker
+        id: docker
         with:
           context: ${{ inputs.context }}
           file: ${{ inputs.context }}/Dockerfile

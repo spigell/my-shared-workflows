@@ -26,12 +26,9 @@ on:
       sha-tag:
         description: "The image version that was built"
         value: ${{ inputs.version }}-${{ jobs.build.outputs.short-sha }}
-      metadata:
-        description: Metadata for built image
-        value: ${{ jobs.docker-build.outputs.metadata }}
       digest:
         description: Metadata for built image
-        value: ${{ jobs.docker-build.outputs.digest }}
+        value: ${{ jobs.build.outputs.docker.digest }}
 
 jobs:
   build:

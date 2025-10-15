@@ -14,3 +14,15 @@ jobs:
       build-args: |
         GO_VERSION=1.25
 
+  build-context-release:
+    uses: ./.github/workflows/docker-build-release.yaml
+    with:
+      image-name: golang-test-relase
+      dry-run: true
+      context: ./testdata/golang
+      version: v0.1.0
+      build-args: |
+        GO_VERSION=1.25
+      build-contexts: |
+        shared=./testdata/shared
+

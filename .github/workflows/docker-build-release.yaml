@@ -16,6 +16,10 @@ on:
       build-args:
         required: false
         type: string
+      build-contexts:
+        required: false
+        type: string
+        default: ""
       dry-run:
         required: false
         type: boolean
@@ -66,3 +70,4 @@ jobs:
             ghcr.io/${{ github.actor }}/${{ inputs.image-name }}:${{ inputs.version }}-${{ steps.short-sha.outputs.sha }}
             ghcr.io/${{ github.actor }}/${{ inputs.image-name }}:${{ inputs.version }}-latest
           build-args: ${{ inputs.build-args }}
+          build-contexts: ${{ inputs.build-contexts }}

@@ -20,6 +20,7 @@ FROM alpine:3.19
 WORKDIR /app
 
 COPY --from=builder /app/server .
+COPY --from=shared shared-script.sh /shared-script.sh
 
 EXPOSE 8080
 

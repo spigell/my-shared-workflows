@@ -24,5 +24,5 @@ jobs:
       build-args: |
         GO_VERSION=1.25
       build-contexts: |
-        shared=../shared
+        shared=./testdata/shared
 

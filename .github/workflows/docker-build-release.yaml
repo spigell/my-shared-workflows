@@ -27,7 +27,6 @@ on:
     secrets:
       gh-token:
         required: false
-        type: string
 
     outputs:
       version:

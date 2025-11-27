@@ -18,7 +18,7 @@ runs:
       with:
         node-version: ${{ inputs.node-version }}
         cache: yarn
-        cache-dependency-path: ${{ github.workspace }}/${{ inputs.working-directory }}/yarn.lock
+        cache-dependency-path: ${{ hashFiles(format('{0}/{1}', inputs.working-directory, 'yarn.lock')) != '' && format('{0}/{1}', github.workspace, format('{0}/{1}', inputs.working-directory, 'yarn.lock')) || '' }}
 
     - name: Install dependencies
       shell: bash

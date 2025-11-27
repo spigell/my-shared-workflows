@@ -19,6 +19,10 @@ on:
         required: false
         type: string
         default: 'setup-go-env'
+      actions-branch:
+        required: false
+        type: string
+        default: 'main'
       packages:
         required: false
         type: string
@@ -41,7 +45,7 @@ jobs:
       - name: Get actions
         if: ${{ !env.ACT }}
         run: |
-          git clone --branch ${{ github.ref_name }} "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ./.github/actions_ext
+          git clone --branch ${{ inputs.actions-branch }} "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ./.github/actions_ext
 
       - name: Install Act dependencies
         if: ${{ env.ACT }}
@@ -89,7 +93,7 @@ jobs:
       - name: Get actions
         if: ${{ !env.ACT }}
         run: |
-          git clone --branch ${{ github.ref_name }} "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ./.github/actions_ext
+          git clone --branch ${{ inputs.actions-branch }} "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ./.github/actions_ext
 
       - name: Install Act dependencies
         if: ${{ env.ACT }}

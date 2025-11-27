@@ -19,6 +19,14 @@ on:
         required: false
         type: string
         default: 'setup-go-env'
+      packages:
+        required: false
+        type: string
+        default: './...'
+      exclude-regex:
+        required: false
+        type: string
+        default: 'integration|crds/generated'
 
 
 jobs:
@@ -56,7 +64,11 @@ jobs:
         run: |
           cd ${{ inputs.working-directory }}
           set -o pipefail
-          pkgs=$(go list ./... | grep -v integration | grep -v crds/generated || true)
+          pkgs=$(go list ${{ inputs.packages }} || true)
+          echo "Packages before filtering: $pkgs"
+          if [ -n "${{ inputs.exclude-regex }}" ]; then
+            pkgs=$(echo "$pkgs" | grep -Ev "${{ inputs.exclude-regex }}" || true)
+          fi
           echo "Allowed packages: $pkgs"
           if [ -n "$pkgs" ]; then
             go test ${{ inputs.test-flags }} $pkgs

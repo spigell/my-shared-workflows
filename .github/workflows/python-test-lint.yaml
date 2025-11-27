@@ -18,15 +18,7 @@ on:
       disable-linter:
         required: false
         type: boolean
-        default: true
-      test-command:
-        required: false
-        type: string
-        default: 'pytest'
-      lint-command:
-        required: false
-        type: string
-        default: 'flake8'
+        default: false
       actions-branch:
         required: false
         type: string
@@ -57,7 +49,7 @@ jobs:
       - name: Run unit tests
         run: |
           cd ${{ inputs.working-directory }}
-          ${{ inputs.test-command }}
+          python -m pytest
 
   run-linter:
     name: Run linter
@@ -84,4 +76,4 @@ jobs:
       - name: Run lint command
         run: |
           cd ${{ inputs.working-directory }}
-          ${{ inputs.lint-command }}
+          python -m ruff check .

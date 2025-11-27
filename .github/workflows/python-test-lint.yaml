@@ -73,7 +73,7 @@ jobs:
           python-version: ${{ inputs.python-version }}
           working-directory: ${{ inputs.working-directory }}
           requirements-file: ${{ inputs.requirements-file }}
-      - name: Run lint command
-        run: |
-          cd ${{ inputs.working-directory }}
-          python -m ruff check .
+      - name: Run ruff
+        uses: astral-sh/ruff-action@v3
+        with:
+          src: ${{ inputs.working-directory }}

@@ -1,0 +1,85 @@
+name: Node.js test and linting
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        required: false
+        type: string
+        default: '.'
+      node-version:
+        required: false
+        type: string
+        default: '22'
+      disable-linter:
+        required: false
+        type: boolean
+        default: false
+      test-command:
+        required: false
+        type: string
+        default: 'yarn test'
+      lint-command:
+        required: false
+        type: string
+        default: 'yarn lint'
+
+jobs:
+  run-unit-test:
+    name: Run unit tests
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+      - name: Get actions
+        if: ${{ !env.ACT }}
+        run: |
+          git clone "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ./.github/actions_ext
+      - name: Install Act dependencies
+        if: ${{ env.ACT }}
+        uses: ./.github/actions/setup-act-env
+      - name: Setup Node env
+        uses: ./.github/actions_ext/.github/actions/setup-node-env
+        with:
+          node-version: ${{ inputs.node-version }}
+          working-directory: ${{ inputs.working-directory }}
+      - name: Install dependencies
+        run: |
+          cd ${{ inputs.working-directory }}
+          yarn install --frozen-lockfile
+      - name: Run unit tests
+        run: |
+          cd ${{ inputs.working-directory }}
+          ${{ inputs.test-command }}
+
+  run-linter:
+    name: Run linter
+    if: ${{ !inputs.disable-linter }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+      - name: Get actions
+        if: ${{ !env.ACT }}
+        run: |
+          git clone "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ./.github/actions_ext
+      - name: Install Act dependencies
+        if: ${{ env.ACT }}
+        uses: ./.github/actions/setup-act-env
+      - name: Setup Node env
+        uses: ./.github/actions_ext/.github/actions/setup-node-env
+        with:
+          node-version: ${{ inputs.node-version }}
+          working-directory: ${{ inputs.working-directory }}
+      - name: Install dependencies
+        run: |
+          cd ${{ inputs.working-directory }}
+          yarn install --frozen-lockfile
+      - name: Run lint command
+        run: |
+          cd ${{ inputs.working-directory }}
+          ${{ inputs.lint-command }}

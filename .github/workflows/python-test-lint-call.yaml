@@ -10,6 +10,4 @@ jobs:
       working-directory: 'testdata/python'
       python-version: '3.12'
       requirements-file: 'requirements.txt'
-      test-command: 'pytest'
-      lint-command: 'flake8'
       disable-linter: false

@@ -19,6 +19,18 @@ on:
         required: false
         type: string
         default: 'setup-go-env'
+      actions-branch:
+        required: false
+        type: string
+        default: 'main'
+      packages:
+        required: false
+        type: string
+        default: './...'
+      exclude-regex:
+        required: false
+        type: string
+        default: 'integration|crds/generated'
 
 
 jobs:
@@ -33,7 +45,7 @@ jobs:
       - name: Get actions
         if: ${{ !env.ACT }}
         run: |
-          git clone "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ./.github/actions_ext
+          git clone --branch ${{ inputs.actions-branch }} "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ./.github/actions_ext
 
       - name: Install Act dependencies
         if: ${{ env.ACT }}
@@ -56,7 +68,11 @@ jobs:
         run: |
           cd ${{ inputs.working-directory }}
           set -o pipefail
-          pkgs=$(go list ./... | grep -v integration | grep -v crds/generated || true)
+          pkgs=$(go list ${{ inputs.packages }} || true)
+          echo "Packages before filtering: $pkgs"
+          if [ -n "${{ inputs.exclude-regex }}" ]; then
+            pkgs=$(echo "$pkgs" | grep -Ev "${{ inputs.exclude-regex }}" || true)
+          fi
           echo "Allowed packages: $pkgs"
           if [ -n "$pkgs" ]; then
             go test ${{ inputs.test-flags }} $pkgs
@@ -77,7 +93,7 @@ jobs:
       - name: Get actions
         if: ${{ !env.ACT }}
         run: |
-          git clone "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ./.github/actions_ext
+          git clone --branch ${{ inputs.actions-branch }} "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ./.github/actions_ext
 
       - name: Install Act dependencies
         if: ${{ env.ACT }}

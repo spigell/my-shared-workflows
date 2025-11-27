@@ -1,0 +1,35 @@
+name: Setup Python Environment
+description: Installs Python and project dependencies
+inputs:
+  python-version:
+    description: Python version to install
+    required: false
+    default: '3.12'
+  working-directory:
+    description: Directory containing requirements.txt
+    required: false
+    default: '.'
+  requirements-file:
+    description: Path to requirements file relative to working-directory
+    required: false
+    default: 'requirements.txt'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+        cache: 'pip'
+        cache-dependency-path: ${{ github.workspace }}/${{ inputs.working-directory }}/${{ inputs.requirements-file }}
+
+    - name: Install dependencies
+      shell: bash
+      run: |
+        cd "$GITHUB_WORKSPACE/${{ inputs.working-directory }}"
+        if [ -f "${{ inputs.requirements-file }}" ]; then
+          python -m pip install -r "${{ inputs.requirements-file }}"
+        else
+          echo "Requirements file ${{ inputs.requirements-file }} not found; skipping pip install"
+        fi

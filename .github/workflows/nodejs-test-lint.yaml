@@ -1,0 +1,88 @@
+name: Node.js test and linting
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        required: false
+        type: string
+        default: '.'
+      node-version:
+        required: false
+        type: string
+        default: '22'
+      disable-linter:
+        required: false
+        type: boolean
+        default: false
+      test-flags:
+        required: false
+        type: string
+        default: 'run'
+      eslint-flags:
+        required: false
+        type: string
+        default: '.'
+      actions-branch:
+        required: false
+        type: string
+        default: 'main'
+
+jobs:
+  run-unit-test:
+    name: Run unit tests
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+      - name: Get actions
+        if: ${{ !env.ACT }}
+        run: |
+          git clone --branch ${{ inputs.actions-branch }} "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ./.github/actions_ext
+      - name: Install Act dependencies
+        if: ${{ env.ACT }}
+        uses: ./.github/actions/setup-act-env
+      - name: Setup Node env
+        uses: ./.github/actions_ext/.github/actions/setup-node-env
+        with:
+          node-version: ${{ inputs.node-version }}
+          working-directory: ${{ inputs.working-directory }}
+      - name: Run unit tests
+        run: |
+          cd ${{ inputs.working-directory }}
+          yarn vitest ${{ inputs.test-flags }}
+
+  run-linter:
+    name: Run linter
+    if: ${{ !inputs.disable-linter }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      pull-requests: write
+      checks: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+      - name: Get actions
+        if: ${{ !env.ACT }}
+        run: |
+          git clone --branch ${{ inputs.actions-branch }} "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ./.github/actions_ext
+      - name: Install Act dependencies
+        if: ${{ env.ACT }}
+        uses: ./.github/actions/setup-act-env
+      - name: Setup Node env
+        uses: ./.github/actions_ext/.github/actions/setup-node-env
+        with:
+          node-version: ${{ inputs.node-version }}
+          working-directory: ${{ inputs.working-directory }}
+      - name: Run ESLint with reviewdog
+        uses: reviewdog/action-eslint@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-check
+          workdir: ${{ inputs.working-directory }}
+          eslint_flags: ${{ inputs.eslint-flags }}

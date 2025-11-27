@@ -1,0 +1,13 @@
+name: Local Python CI Test
+
+on:
+  push:
+
+jobs:
+  python-tests:
+    uses: ./.github/workflows/python-test-lint.yaml
+    with:
+      working-directory: 'testdata/python'
+      python-version: '3.12'
+      requirements-file: 'requirements.txt'
+      disable-linter: false

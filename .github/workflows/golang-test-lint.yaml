@@ -41,7 +41,7 @@ jobs:
       - name: Get actions
         if: ${{ !env.ACT }}
         run: |
-          git clone "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ./.github/actions_ext
+          git clone --branch ${{ github.ref_name }} "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ./.github/actions_ext
 
       - name: Install Act dependencies
         if: ${{ env.ACT }}
@@ -89,7 +89,7 @@ jobs:
       - name: Get actions
         if: ${{ !env.ACT }}
         run: |
-          git clone "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ./.github/actions_ext
+          git clone --branch ${{ github.ref_name }} "$GITHUB_SERVER_URL/spigell/my-shared-workflows" ./.github/actions_ext
 
       - name: Install Act dependencies
         if: ${{ env.ACT }}

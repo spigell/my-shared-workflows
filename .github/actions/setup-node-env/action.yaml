@@ -19,3 +19,13 @@ runs:
         node-version: ${{ inputs.node-version }}
         cache: yarn
         cache-dependency-path: ${{ inputs.working-directory }}/yarn.lock
+
+    - name: Install dependencies
+      shell: bash
+      run: |
+        cd ${{ inputs.working-directory }}
+        if [ -f yarn.lock ]; then
+          yarn install --frozen-lockfile
+        else
+          yarn install
+        fi

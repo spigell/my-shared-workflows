@@ -1,0 +1,13 @@
+name: Local Node CI Test
+
+on:
+  push:
+
+jobs:
+  node-tests:
+    uses: ./.github/workflows/nodejs-test-lint.yaml
+    with:
+      working-directory: 'testdata/nodejs'
+      node-version: '22'
+      test-flags: 'run'
+      eslint-flags: '.'

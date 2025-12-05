@@ -8,6 +8,6 @@ jobs:
     uses: ./.github/workflows/python-test-lint.yaml
     with:
       working-directory: 'testdata/python'
-      python-version: '3.12'
+      python-version: '3.13.7'
       requirements-file: 'requirements.txt'
       disable-linter: false

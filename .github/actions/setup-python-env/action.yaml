@@ -4,13 +4,13 @@ inputs:
   python-version:
     description: Python version to install
     required: false
-    default: '3.12'
+    default: '3.13.7'
   working-directory:
-    description: Directory containing requirements.txt
+    description: Directory containing pyproject.toml
     required: false
     default: '.'
   requirements-file:
-    description: Path to requirements file relative to working-directory
+    description: (Deprecated) Path to requirements file relative to working-directory; ignored when using Poetry
     required: false
     default: 'requirements.txt'
 
@@ -21,15 +21,23 @@ runs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ inputs.python-version }}
-        cache: 'pip'
-        cache-dependency-path: ${{ github.workspace }}/${{ inputs.working-directory }}/${{ inputs.requirements-file }}
+        cache: 'poetry'
+        cache-dependency-path: |
+          ${{ github.workspace }}/${{ inputs.working-directory }}/poetry.lock
+          ${{ github.workspace }}/${{ inputs.working-directory }}/pyproject.toml
+
+    - name: Install and configure Poetry
+      uses: snok/install-poetry@v1
+      with:
+        version: 2.2.1
 
     - name: Install dependencies
       shell: bash
       run: |
         cd "$GITHUB_WORKSPACE/${{ inputs.working-directory }}"
-        if [ -f "${{ inputs.requirements-file }}" ]; then
-          python -m pip install -r "${{ inputs.requirements-file }}"
-        else
-          echo "Requirements file ${{ inputs.requirements-file }} not found; skipping pip install"
+        if [ ! -f "pyproject.toml" ]; then
+          echo "pyproject.toml not found in ${{ inputs.working-directory }}; cannot install dependencies with Poetry" >&2
+          exit 1
         fi
+
+        poetry install --no-interaction --no-ansi

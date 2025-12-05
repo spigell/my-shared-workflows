@@ -17,6 +17,11 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Install and configure Poetry
+      uses: snok/install-poetry@v1
+      with:
+        version: 2.2.1
+
     - name: Setup Python
       uses: actions/setup-python@v5
       with:
@@ -25,11 +30,6 @@ runs:
         cache-dependency-path: |
           ${{ github.workspace }}/${{ inputs.working-directory }}/poetry.lock
           ${{ github.workspace }}/${{ inputs.working-directory }}/pyproject.toml
-
-    - name: Install and configure Poetry
-      uses: snok/install-poetry@v1
-      with:
-        version: 2.2.1
 
     - name: Install dependencies
       shell: bash

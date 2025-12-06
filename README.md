@@ -20,7 +20,7 @@ jobs:
   test:
     uses: your-org/shared-workflows/.github/workflows/golang-test-lint.yaml@main
     with:
-      go-version: '1.22'
+      go-version: '1.25.5'
       working-directory: '.'
   release:
     uses: your-org/shared-workflows/.github/workflows/npm-package-release.yaml@main

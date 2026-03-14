@@ -20,6 +20,21 @@ Reusable GitHub Actions workflows and composite actions for Go (Golang), NodeJS/
 
 ## 🚀 Reusable Workflows
 
+### Go: Test and Linting
+Runs unit tests with `go test` and linter with `golangci-lint`.
+
+**Workflow:** `.github/workflows/golang-test-lint.yaml`
+
+```yaml
+jobs:
+  test:
+    uses: your-org/shared-workflows/.github/workflows/golang-test-lint.yaml@main
+    with:
+      working-directory: '.'      # Optional
+      test-flags: '-v'            # Optional: flags for go test
+      disable-linter: false       # Optional
+```
+
 ### Node.js: Test and Linting
 Runs unit tests with `vitest` and linter with `eslint`.
 
@@ -70,6 +85,18 @@ jobs:
 ```
 
 ## 🛠 Composite Actions
+
+### Setup Go Environment
+Sets up Go environment with caching for modules and build artifacts.
+
+**Action:** `.github/actions/setup-go-env`
+
+```yaml
+steps:
+  - uses: your-org/shared-workflows/.github/actions/setup-go-env@main
+    with:
+      working-directory: '.'
+```
 
 ### Setup Node.js Environment
 Installs Node.js, caches `yarn` dependencies, and runs `yarn install`.

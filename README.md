@@ -35,5 +35,5 @@ Integration tests run automatically on push/PR using `testdata/`.
 
 Local testing with `act`:
 ```bash
-act -W ./.github/workflows/nodejs-test-lint-call.yaml --input working-directory=./testdata/nodejs
+act -W ./.github/workflows/nodejs-test-lint-call.yaml --input working-directory=testdata/nodejs
 ```

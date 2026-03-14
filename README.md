@@ -1,39 +1,39 @@
 # Shared GitHub Workflows
 
-Reusable GitHub Actions workflows and composite actions for Go (Golang) and NodeJS/TypeScript projects.
+Reusable GitHub Actions workflows and composite actions for Go (Golang), NodeJS/TypeScript, and Python projects.
 
 ## 📁 Structure
 ```
 .github/
 ├── workflows/
-│ ├── *.yaml # Reusable workflows
-│ ├── *-call.yaml # Wrappers for local testing
-├── actions/ # Composite setup action
-testdata # Projects for testing
+│   ├── golang-*.yaml    # Go reusable workflows
+│   ├── nodejs-*.yaml    # Node.js reusable workflows
+│   ├── python-*.yaml    # Python reusable workflows
+├── actions/
+│   ├── setup-*-env      # Composite setup actions
+└── testdata             # Project samples for integration testing
 ```
 
-## 🚀 Usage
-Example:
+## 🚀 Usage Example
+
+All workflows follow a similar pattern. Here is how to use the Go test and linting workflow:
 
 ```yaml
 jobs:
   test:
     uses: your-org/shared-workflows/.github/workflows/golang-test-lint.yaml@main
     with:
-      go-version: '1.25.5'
       working-directory: '.'
-  release:
-    uses: your-org/shared-workflows/.github/workflows/npm-package-release.yaml@main
-    with:
-      working-directory: '.'
-      platform: npm
-    secrets:
-      token: ${{ secrets.NPM_TOKEN }}
+      test-flags: '-v'
 ```
 
-🧪 Local Testing
+For other languages (Node.js, Python) or actions, refer to the files in `.github/workflows/` and `.github/actions/`.
 
-Test with act:
-```
-act -W  ./.github/workflows/nodejs-package-release.yaml --input working-directory=./testdata/nodejs -P ubuntu-24.04=ghcr.io/catthehacker/ubuntu:act-24.04 --secret token=1111 --input package-directory=./testdata/nodejs --input dry-run=true --input setup-action=setup-pulumi-env
+🧪 Integration Testing
+
+Integration tests run automatically on push/PR using `testdata/`.
+
+Local testing with `act`:
+```bash
+act -W ./.github/workflows/nodejs-test-lint-call.yaml --input working-directory=testdata/nodejs
 ```

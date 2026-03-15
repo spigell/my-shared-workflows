@@ -55,6 +55,20 @@ runs:
       with:
         pulumi-version-file: .pulumi.version
 
+    - name: Install Node dependencies
+      if: ${{ contains(inputs.runtime, 'nodejs') }}
+      run: |
+        cd "$GITHUB_WORKSPACE/${{ inputs.working-directory }}"
+        if [ ! -f package.json ]; then
+          exit 0
+        fi
+        if [ ! -f yarn.lock ]; then
+          echo "Skipping dependency install because yarn.lock is missing in $GITHUB_WORKSPACE/${{ inputs.working-directory }}"
+          exit 0
+        fi
+        yarn install --frozen-lockfile
+      shell: bash
+
     - name: Generate schema
       run: make generate_schema
       working-directory: ${{ inputs.working-directory }}

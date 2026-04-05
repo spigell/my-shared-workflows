@@ -15,6 +15,7 @@ kubeconfig
 output/*
 *local*
 go.work.sum
+.COMMIT_MSG.txt
 
 build/*
 test-project/*

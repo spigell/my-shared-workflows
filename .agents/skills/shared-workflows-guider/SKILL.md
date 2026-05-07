@@ -27,3 +27,4 @@ Use this skill to ground work against the actual reusable GitHub Actions assets 
 5. Call out workflow-specific constraints when they affect usage. In particular, both release workflows validate tag/default-branch conditions outside `act`, and the Pulumi setup action runs `make generate_schema`.
 6. If documentation or a requested capability is missing, do not infer it from README examples alone. Verify it in the YAML, then update `AGENTS.md` and any affected docs so they match the checked-in implementation.
 7. Do not claim MCP server support from this repository unless checked-in MCP configuration files are added. Today the repository provides GitHub workflow assets, not MCP applications.
+8. When a task asks you to align skill coverage, inspect `.agents/skills/` directly before creating anything new. Do not create additional repo-local skill files unless a distinct capability exists outside the workflow/action guidance this skill already covers.

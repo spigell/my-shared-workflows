@@ -4,7 +4,9 @@
 This repository ships reusable GitHub Actions workflows and composite setup actions for Go, Node.js, Python, Docker image builds, and Pulumi-oriented CI setup.
 
 ## Repo-local Skills
-- `shared-workflows-guider` - Use this skill when you need to choose, inspect, or document the correct reusable workflow or composite setup action in this repository.
+- `shared-workflows-guider` - Use this skill when you need to inspect the checked-in reusable workflows or composite setup actions, distinguish consumer entry points from `*-call.yaml` validation harnesses, and align docs with the YAML that actually ships.
+
+The repository currently contains no other repo-local skill definitions under `.agents/skills/`.
 
 ## Reusable Workflows
 - `.github/workflows/golang-test-lint.yaml` - Runs Go unit tests and optional `golangci-lint`, with support for either `setup-go-env` or `setup-pulumi-env`.
@@ -32,5 +34,5 @@ These `*-call.yaml` files are repository test harnesses for local CI coverage. T
 - `.github/actions/setup-python-env/action.yaml` - Installs Poetry, configures Python, restores Poetry caches, and installs dependencies from `pyproject.toml`.
 
 ## MCP And Tooling Notes
-- No repo-local MCP server configuration or application manifests were found. There is no checked-in `.mcp.json`, `mcp.json`, or other explicit MCP server registration in this repository.
-- The repository does depend on external GitHub Actions such as `actions/checkout`, `actions/setup-go`, `actions/setup-node`, `actions/setup-python`, `docker/build-push-action`, `goreleaser/goreleaser-action`, `reviewdog/action-eslint`, `astral-sh/ruff-action`, and `pulumi/actions`.
+- No repo-local MCP server configuration or application manifests were found in the repository root, `.github/`, or `.agents/`. There is no checked-in `.mcp.json`, `mcp.json`, or other explicit MCP server registration in this repository.
+- The workflows and setup actions rely on external GitHub Actions including `actions/cache`, `actions/checkout`, `actions/setup-go`, `actions/setup-node`, `actions/setup-python`, `astral-sh/ruff-action`, `benjlevesque/short-sha`, `docker/build-push-action`, `docker/login-action`, `docker/setup-buildx-action`, `golangci/golangci-lint-action`, `goreleaser/goreleaser-action`, `jaxxstorm/action-install-gh-release`, `JS-DevTools/npm-publish`, `pulumi/actions`, `reviewdog/action-eslint`, and `snok/install-poetry`.

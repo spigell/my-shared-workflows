@@ -20,7 +20,7 @@ runs:
     - name: Install and configure Poetry
       uses: snok/install-poetry@v1
       with:
-        version: 2.2.1 # renovate: datasource=github-releases depName=python-poetry/poetry
+        version: 2.4.1 # renovate: datasource=github-releases depName=python-poetry/poetry
 
     - name: Setup Python
       uses: actions/setup-python@v5

@@ -82,7 +82,7 @@ jobs:
         if: ${{ inputs.setup-action == 'setup-node-env' }}
         uses: actions/setup-node@v6
         with:
-          node-version: 22 # renovate: datasource=node-version depName=node
+          node-version: 24 # renovate: datasource=node-version depName=node
 
       - name: Setup Pulumi env
         if: ${{ inputs.setup-action == 'setup-pulumi-env' }}

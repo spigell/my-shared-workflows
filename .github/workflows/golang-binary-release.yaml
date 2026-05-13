@@ -86,7 +86,7 @@ jobs:
           working-directory: ${{ inputs.working-directory }}
 
       - name: Release required binaries
-        uses: goreleaser/goreleaser-action@v6
+        uses: goreleaser/goreleaser-action@v7
         with:
           distribution: goreleaser
           args: release --clean --verbose --config ${{ inputs.config-path }}

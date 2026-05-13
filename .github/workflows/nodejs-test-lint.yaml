@@ -83,6 +83,6 @@ jobs:
         uses: reviewdog/action-eslint@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: github-actions
+          reporter: github-pr-annotations
           workdir: ${{ inputs.working-directory }}
           eslint_flags: ${{ inputs.eslint-flags }}

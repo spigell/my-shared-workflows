@@ -118,4 +118,4 @@ jobs:
           skip-cache: true
           working-directory: ${{ inputs.working-directory }}
           args: --timeout=10m
-          version: v2.6.2
+          version: v2.12.2

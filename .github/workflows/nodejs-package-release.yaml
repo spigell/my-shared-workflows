@@ -80,7 +80,7 @@ jobs:
 
       - name: Setup Node env
         if: ${{ inputs.setup-action == 'setup-node-env' }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22 # renovate: datasource=node-version depName=node
 

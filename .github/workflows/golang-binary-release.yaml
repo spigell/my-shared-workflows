@@ -90,7 +90,7 @@ jobs:
         with:
           distribution: goreleaser
           args: release --clean --verbose --config ${{ inputs.config-path }}
-          version: '2.11.0'
+          version: '2.11.0' # renovate: datasource=github-releases depName=goreleaser/goreleaser
           workdir: ${{ inputs.working-directory }}
         env:
           GITHUB_TOKEN: ${{ secrets.gh-token }}

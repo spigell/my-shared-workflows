@@ -102,7 +102,7 @@ jobs:
           echo "@spigell:registry=https://npm.pkg.github.com" >> ${{ inputs.package-directory }}/.npmrc
 
       - name: Publish package to the registry
-        uses: JS-DevTools/npm-publish@v3
+        uses: JS-DevTools/npm-publish@v4
         with:
           package: ${{ inputs.package-directory }}
           token: ${{ secrets.token }}

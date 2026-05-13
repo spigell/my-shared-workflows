@@ -13,6 +13,6 @@ jobs:
     uses: ./.github/workflows/nodejs-test-lint.yaml
     with:
       working-directory: 'testdata/nodejs'
-      node-version: '22'
+      node-version: '22' # renovate: datasource=node-version depName=node
       test-flags: 'run'
       eslint-flags: '.'

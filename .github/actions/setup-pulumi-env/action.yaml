@@ -25,14 +25,14 @@ runs:
           ${{ runner.os }}-go-${{ hashFiles('${{ inputs.working-directory }}/go.sum') }}
 
     - name: Setup Go for Go runtime (based on go.mod file)
-      uses: actions/setup-go@v5
+      uses: actions/setup-go@v6
       if: ${{ contains(inputs.runtime, 'go') }}
       with:
         go-version-file: ${{ inputs.working-directory }}/go.mod
         cache: false
 
     - name: Setup Go for non Go runtimes
-      uses: actions/setup-go@v5
+      uses: actions/setup-go@v6
       if: ${{ contains(inputs.runtime, 'nodejs') }}
       with:
         go-version: stable

@@ -26,3 +26,5 @@ test-template
 ~              
 dist
 .npmrc
+
+.antigravitycli/

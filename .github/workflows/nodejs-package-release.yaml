@@ -107,7 +107,7 @@ jobs:
 
       - name: Publish package to the registry
         if: ${{ !inputs.staged }}
-        uses: JS-DevTools/npm-publish@v3
+        uses: JS-DevTools/npm-publish@v4
         with:
           package: ${{ inputs.package-directory }}
           token: ${{ secrets.token }}

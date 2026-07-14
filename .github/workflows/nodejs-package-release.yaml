@@ -27,6 +27,10 @@ on:
         required: false
         type: boolean
         default: false
+      staged:
+        required: false
+        type: boolean
+        default: false
     secrets:
       token:
         required: true
@@ -102,8 +106,27 @@ jobs:
           echo "@spigell:registry=https://npm.pkg.github.com" >> ${{ inputs.package-directory }}/.npmrc
 
       - name: Publish package to the registry
+        if: ${{ !inputs.staged }}
         uses: JS-DevTools/npm-publish@v3
         with:
           package: ${{ inputs.package-directory }}
           token: ${{ secrets.token }}
           dry-run: ${{ inputs.dry-run }}
+
+      # Staged publishing: CI only submits the package to the staging area
+      # (no 2FA required). A maintainer must approve it with 2FA via
+      # `npm stage approve <id>` or on npmjs.com before it is released.
+      # Requires npm CLI >= 11.15.0 and Node >= 22.14.0.
+      - name: Update npm CLI for staged publishing
+        if: ${{ inputs.staged }}
+        # renovate: datasource=npm depName=npm
+        run: npm install -g npm@11.15.0
+
+      - name: Configure npmrc for npm registry (staged)
+        if: ${{ inputs.staged }}
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.token }}" > ${{ inputs.package-directory }}/.npmrc
+
+      - name: Stage publish package to the registry
+        if: ${{ inputs.staged }}
+        working-directory: ${{ inputs.package-directory }}
+        run: npm stage publish ${{ inputs.dry-run && '--dry-run' || '' }}

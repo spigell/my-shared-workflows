@@ -42,7 +42,7 @@ runs:
       uses: actions/setup-node@v6
       if: ${{ contains(inputs.runtime, 'nodejs') }}
       with:
-        node-version: 22 # renovate: datasource=node-version depName=node
+        node-version: 24 # renovate: datasource=node-version depName=node
 
     - name: Install pulumictl
       uses: jaxxstorm/action-install-gh-release@v2.1.0

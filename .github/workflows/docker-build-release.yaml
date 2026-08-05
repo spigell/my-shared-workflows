@@ -46,7 +46,7 @@ jobs:
       digest: ${{ steps.docker.outputs.digest }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - uses: benjlevesque/short-sha@v3.0
         id: short-sha

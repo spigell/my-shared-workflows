@@ -26,22 +26,10 @@ jobs:
     steps:
       - name: Validate ref
         if: ${{ !env.ACT }}
-        env:
-          GITHUB_EVENT_REPOSITORY_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
-          GITHUB_EVENT_BASE_REF: ${{ github.event.base_ref }}
         run: |
           node -e '
             const ref = process.env.GITHUB_REF;
             console.log("Current ref:", ref);
-
-            const baseRef = process.env.GITHUB_EVENT_BASE_REF;
-            const defaultBranch = process.env.GITHUB_EVENT_REPOSITORY_DEFAULT_BRANCH;
-
-            const isDefaultBranch = baseRef === `refs/heads/${defaultBranch}`;
-            if (!isDefaultBranch) {
-              console.log(`Not Valid: must be running on default branch (${defaultBranch})`);
-              process.exit(1);
-            }
 
             const isTag = ref.startsWith("refs/tags/");
             if (!isTag) {
@@ -56,6 +44,16 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
+
+      - name: Validate tag commit
+        if: ${{ !env.ACT }}
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" "origin/$DEFAULT_BRANCH"; then
+            echo "Not Valid: tagged commit must be on the default branch ($DEFAULT_BRANCH)"
+            exit 1
+          fi
 
       - name: Get actions
         if: ${{ !env.ACT }}

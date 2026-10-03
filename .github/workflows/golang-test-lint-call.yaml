@@ -7,9 +7,11 @@ jobs:
   basic-workflow:
     uses: ./.github/workflows/golang-test-lint.yaml
     with:
+      actions-branch: ${{ github.ref_name }}
       working-directory: 'testdata/golang'
   pulumi-workflow:
     uses: ./.github/workflows/golang-test-lint.yaml
     with:
+      actions-branch: ${{ github.ref_name }}
       setup-action: 'setup-pulumi-env'
       working-directory: 'testdata/golang'

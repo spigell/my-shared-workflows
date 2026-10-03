@@ -27,6 +27,10 @@ on:
         required: false
         type: boolean
         default: false
+      staged:
+        required: false
+        type: boolean
+        default: false
     secrets:
       token:
         required: true
@@ -38,22 +42,10 @@ jobs:
     steps:
       - name: Validate ref
         if: ${{ !env.ACT }}
-        env:
-          GITHUB_EVENT_REPOSITORY_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
-          GITHUB_EVENT_BASE_REF: ${{ github.event.base_ref }}
         run: |
           node -e '
             const ref = process.env.GITHUB_REF;
             console.log("Current ref:", ref);
-
-            const baseRef = process.env.GITHUB_EVENT_BASE_REF;
-            const defaultBranch = process.env.GITHUB_EVENT_REPOSITORY_DEFAULT_BRANCH;
-
-            const isDefaultBranch = baseRef === `refs/heads/${defaultBranch}`;
-            if (!isDefaultBranch) {
-              console.log(`Not Valid: must be running on default branch (${defaultBranch})`);
-              process.exit(1);
-            }
 
             const isTag = ref.startsWith("refs/tags/");
             if (!isTag) {
@@ -64,10 +56,20 @@ jobs:
             console.log("✅ Valid ref:", ref);
           '
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           fetch-tags: true
+
+      - name: Validate tag commit
+        if: ${{ !env.ACT }}
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" "origin/$DEFAULT_BRANCH"; then
+            echo "Not Valid: tagged commit must be on the default branch ($DEFAULT_BRANCH)"
+            exit 1
+          fi
 
       - name: Get actions
         if: ${{ !env.ACT }}
@@ -80,7 +82,7 @@ jobs:
 
       - name: Setup Node env
         if: ${{ inputs.setup-action == 'setup-node-env' }}
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 24 # renovate: datasource=node-version depName=node
 
@@ -102,8 +104,27 @@ jobs:
           echo "@spigell:registry=https://npm.pkg.github.com" >> ${{ inputs.package-directory }}/.npmrc
 
       - name: Publish package to the registry
+        if: ${{ !inputs.staged }}
         uses: JS-DevTools/npm-publish@v3
         with:
           package: ${{ inputs.package-directory }}
           token: ${{ secrets.token }}
           dry-run: ${{ inputs.dry-run }}
+
+      # Staged publishing: CI only submits the package to the staging area
+      # (no 2FA required). A maintainer must approve it with 2FA via
+      # `npm stage approve <id>` or on npmjs.com before it is released.
+      # Requires npm CLI >= 11.15.0 and Node >= 22.14.0.
+      - name: Update npm CLI for staged publishing
+        if: ${{ inputs.staged }}
+        # renovate: datasource=npm depName=npm
+        run: npm install -g npm@11.15.0
+
+      - name: Configure npmrc for npm registry (staged)
+        if: ${{ inputs.staged }}
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.token }}" > ${{ inputs.package-directory }}/.npmrc
+
+      - name: Stage publish package to the registry
+        if: ${{ inputs.staged }}
+        working-directory: ${{ inputs.package-directory }}
+        run: npm stage publish ${{ inputs.dry-run && '--dry-run' || '' }}

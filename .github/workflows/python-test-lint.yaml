@@ -29,7 +29,7 @@ jobs:
     name: Run unit tests
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           fetch-tags: true
@@ -56,7 +56,7 @@ jobs:
     if: ${{ !inputs.disable-linter }}
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           fetch-tags: true
@@ -74,7 +74,7 @@ jobs:
           working-directory: ${{ inputs.working-directory }}
           requirements-file: ${{ inputs.requirements-file }}
       - name: Run ruff
-        uses: astral-sh/ruff-action@v4.0.0
+        uses: astral-sh/ruff-action@v4.1.0
         with:
           version: '0.15.12' # renovate: datasource=github-releases depName=astral-sh/ruff
           src: ${{ inputs.working-directory }}

@@ -6,7 +6,8 @@
   "exports": "./index.js",
   "license": "MIT",
   "dependencies": {
-    "eslint": "^9.39.1",
-    "vitest": "^4.0.14"
+    "eslint": "^10.0.0",
+    "vite": "^6.4.0",
+    "vitest": "^5.0.0"
   }
 }

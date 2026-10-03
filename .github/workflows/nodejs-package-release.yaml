@@ -56,7 +56,7 @@ jobs:
             console.log("✅ Valid ref:", ref);
           '
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           fetch-tags: true
@@ -82,9 +82,9 @@ jobs:
 
       - name: Setup Node env
         if: ${{ inputs.setup-action == 'setup-node-env' }}
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
-          node-version: 22 # renovate: datasource=node-version depName=node
+          node-version: 24 # renovate: datasource=node-version depName=node
 
       - name: Setup Pulumi env
         if: ${{ inputs.setup-action == 'setup-pulumi-env' }}

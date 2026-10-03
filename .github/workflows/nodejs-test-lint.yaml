@@ -10,7 +10,7 @@ on:
       node-version:
         required: false
         type: string
-        default: '22'
+        default: '24'
       disable-linter:
         required: false
         type: boolean
@@ -33,7 +33,7 @@ jobs:
     name: Run unit tests
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           fetch-tags: true
@@ -63,7 +63,7 @@ jobs:
       pull-requests: write
       checks: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           fetch-tags: true

@@ -11,3 +11,4 @@ jobs:
       python-version: '3.13.13' # renovate: datasource=python-version depName=python
       requirements-file: 'requirements.txt'
       disable-linter: false
+      actions-branch: ${{ github.ref_name }}

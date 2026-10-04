@@ -25,33 +25,33 @@ runs:
           ${{ runner.os }}-go-${{ hashFiles('${{ inputs.working-directory }}/go.sum') }}
 
     - name: Setup Go for Go runtime (based on go.mod file)
-      uses: actions/setup-go@v6
+      uses: actions/setup-go@v7
       if: ${{ contains(inputs.runtime, 'go') }}
       with:
         go-version-file: ${{ inputs.working-directory }}/go.mod
         cache: false
 
     - name: Setup Go for non Go runtimes
-      uses: actions/setup-go@v6
+      uses: actions/setup-go@v7
       if: ${{ contains(inputs.runtime, 'nodejs') }}
       with:
         go-version: stable
         cache: false
 
     - name: Setup Node LTS
-      uses: actions/setup-node@v6
+      uses: actions/setup-node@v7
       if: ${{ contains(inputs.runtime, 'nodejs') }}
       with:
-        node-version: 22 # renovate: datasource=node-version depName=node
+        node-version: 24 # renovate: datasource=node-version depName=node
 
     - name: Install pulumictl
-      uses: jaxxstorm/action-install-gh-release@v2.1.0
+      uses: jaxxstorm/action-install-gh-release@v3.0.0
       with:
         repo: pulumi/pulumictl
         tag: v0.0.50
 
     - name: Install Pulumi CLI
-      uses: pulumi/actions@v6.6.1
+      uses: pulumi/actions@v7.0.0
       with:
         pulumi-version-file: .pulumi.version
 

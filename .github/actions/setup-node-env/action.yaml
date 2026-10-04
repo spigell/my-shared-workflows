@@ -4,7 +4,7 @@ inputs:
   node-version:
     description: Node.js version to install
     required: false
-    default: '22'
+    default: '24'
   working-directory:
     description: Directory containing package manager lock file
     required: false
@@ -14,7 +14,7 @@ runs:
   using: "composite"
   steps:
     - name: Setup Node.js
-      uses: actions/setup-node@v6
+      uses: actions/setup-node@v7
       with:
         node-version: ${{ inputs.node-version }}
         cache: yarn

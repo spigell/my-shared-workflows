@@ -12,7 +12,8 @@ jobs:
   node-tests:
     uses: ./.github/workflows/nodejs-test-lint.yaml
     with:
+      actions-branch: ${{ github.ref_name }}
       working-directory: 'testdata/nodejs'
-      node-version: '22' # renovate: datasource=node-version depName=node
+      node-version: '24' # renovate: datasource=node-version depName=node
       test-flags: 'run'
       eslint-flags: '.'

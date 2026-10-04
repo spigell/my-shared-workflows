@@ -23,7 +23,7 @@ runs:
           ${{ runner.os }}-go-${{ hashFiles('${{ inputs.working-directory }}/go.sum') }}
 
     - name: Setup Go
-      uses: actions/setup-go@v6
+      uses: actions/setup-go@v7
       with:
         go-version-file: ${{ inputs.working-directory }}/go.mod
         cache: false

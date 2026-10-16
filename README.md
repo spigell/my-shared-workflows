@@ -29,6 +29,17 @@ jobs:
 
 For other languages (Node.js, Python) or actions, refer to the files in `.github/workflows/` and `.github/actions/`.
 
+### npm package release from an existing tag
+
+The [Node.js package release workflow](.github/workflows/nodejs-package-release.yaml)
+accepts an optional `ref` input. Leave it empty for tag-push callers; the
+workflow validates and checks out the triggering tag as before. For a manual
+dispatch, pass an existing tag name such as `v0.5.1` (or
+`refs/tags/v0.5.1`) to the reusable workflow. It checks out that tag and
+requires its commit to be on the repository's default branch. Other ref
+types are rejected. The caller still needs only `contents: read` and
+`id-token: write` when using trusted publishing.
+
 ### npm trusted publishing
 
 The [Node.js package release workflow](.github/workflows/nodejs-package-release.yaml) accepts

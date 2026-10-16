@@ -31,15 +31,28 @@ on:
         required: false
         type: boolean
         default: false
+      trusted-publishing:
+        required: false
+        type: boolean
+        default: false
     secrets:
       token:
-        required: true
+        required: false
 
 jobs:
   run-release:
     name: "Release NodeJS package"
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      id-token: write
     steps:
+      - name: Validate trusted publishing options
+        if: ${{ inputs.trusted-publishing && (inputs.staged || inputs.platform != 'npm') }}
+        run: |
+          echo "Trusted publishing requires platform: npm and staged: false"
+          exit 1
+
       - name: Validate ref
         if: ${{ !env.ACT }}
         run: |
@@ -104,7 +117,7 @@ jobs:
           echo "@spigell:registry=https://npm.pkg.github.com" >> ${{ inputs.package-directory }}/.npmrc
 
       - name: Publish package to the registry
-        if: ${{ !inputs.staged }}
+        if: ${{ !inputs.staged && !inputs.trusted-publishing }}
         uses: JS-DevTools/npm-publish@v4
         with:
           package: ${{ inputs.package-directory }}
@@ -115,8 +128,8 @@ jobs:
       # (no 2FA required). A maintainer must approve it with 2FA via
       # `npm stage approve <id>` or on npmjs.com before it is released.
       # Requires npm CLI >= 11.15.0 and Node >= 22.14.0.
-      - name: Update npm CLI for staged publishing
-        if: ${{ inputs.staged }}
+      - name: Update npm CLI for staged or trusted publishing
+        if: ${{ inputs.staged || inputs.trusted-publishing }}
         # renovate: datasource=npm depName=npm
         run: npm install -g npm@11.15.0
 
@@ -128,3 +141,12 @@ jobs:
         if: ${{ inputs.staged }}
         working-directory: ${{ inputs.package-directory }}
         run: npm stage publish ${{ inputs.dry-run && '--dry-run' || '' }}
+
+      # Trusted publishing: npm exchanges the GitHub OIDC token for short-lived
+      # credentials. The caller must grant id-token: write; no npm token or
+      # .npmrc auth entry is needed. npm generates provenance automatically.
+      # Requires npm CLI >= 11.5.1 and Node >= 22.14.0.
+      - name: Publish package with npm trusted publishing
+        if: ${{ inputs.trusted-publishing }}
+        working-directory: ${{ inputs.package-directory }}
+        run: npm publish --provenance --access public ${{ inputs.dry-run && '--dry-run' || '' }}

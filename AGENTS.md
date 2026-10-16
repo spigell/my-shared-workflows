@@ -12,7 +12,7 @@ The repository currently contains no other repo-local skill definitions under `.
 - `.github/workflows/golang-test-lint.yaml` - Runs Go unit tests and optional `golangci-lint`, with support for either `setup-go-env` or `setup-pulumi-env`.
 - `.github/workflows/golang-binary-release.yaml` - Publishes Go binaries with GoReleaser after validating that the run is on a tag from the default branch.
 - `.github/workflows/nodejs-test-lint.yaml` - Runs Node.js unit tests with `yarn vitest` and optional ESLint reporting through Reviewdog.
-- `.github/workflows/nodejs-package-release.yaml` - Builds and publishes a Node.js package to npm or GitHub Packages, with optional Pulumi setup, dry-run, staged publishing, token-free npm trusted publishing, or an explicit release tag for manual dispatch. For trusted publishing, callers grant OIDC permissions and register the caller workflow filename on npmjs.com; see the README.
+- `.github/workflows/nodejs-package-release.yaml` - Builds and publishes a Node.js package to npm or GitHub Packages, with optional Pulumi setup, dry-run, staged publishing, token-free npm trusted publishing, an explicit `ref` tag for manual dispatch, and an optional `version` input exported as `VERSION` for the release job (including Pulumi schema generation). Empty `version` leaves `VERSION` unset. For trusted publishing, callers grant OIDC permissions and register the caller workflow filename on npmjs.com; see the README.
 - `.github/workflows/python-test-lint.yaml` - Runs Python tests with Poetry and `pytest`, plus optional Ruff linting.
 - `.github/workflows/docker-build-release.yaml` - Builds and optionally pushes Docker images to GHCR, including support for build args and extra build contexts.
 

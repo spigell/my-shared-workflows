@@ -39,6 +39,10 @@ on:
         required: false
         type: string
         default: ''
+      version:
+        required: false
+        type: string
+        default: ''
     secrets:
       token:
         required: false
@@ -51,6 +55,12 @@ jobs:
       contents: read
       id-token: write
     steps:
+      - name: Export release version
+        if: ${{ inputs.version != '' }}
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: printf 'VERSION=%s\n' "$RELEASE_VERSION" >> "$GITHUB_ENV"
+
       - name: Validate trusted publishing options
         if: ${{ inputs.trusted-publishing && (inputs.staged || inputs.platform != 'npm') }}
         run: |

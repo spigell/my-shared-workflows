@@ -40,6 +40,12 @@ requires its commit to be on the repository's default branch. Other ref
 types are rejected. The caller still needs only `contents: read` and
 `id-token: write` when using trusted publishing.
 
+The optional `version` input exports `VERSION` throughout the release job,
+including the Pulumi setup action's `make generate_schema`, the build command,
+and publishing steps. For a manual dispatch, callers can pass
+`version: ${{ inputs.tag || github.ref_name }}` alongside `ref`. When omitted
+or empty, `VERSION` is not exported and existing version detection applies.
+
 ### npm trusted publishing
 
 The [Node.js package release workflow](.github/workflows/nodejs-package-release.yaml) accepts

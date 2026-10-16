@@ -83,6 +83,15 @@ jobs:
           runtime: go
           working-directory: ${{ inputs.working-directory }}
 
+      - name: Restore go.work.sum after Pulumi setup
+        if: ${{ inputs.setup-action == 'setup-pulumi-env' }}
+        run: |
+          if ! git diff --quiet -- go.work.sum; then
+            echo "Pulumi setup changed go.work.sum; restoring the checked-in version:"
+            git diff -- go.work.sum
+            git restore -- go.work.sum
+          fi
+
       - name: Release required binaries
         uses: goreleaser/goreleaser-action@v7
         with:

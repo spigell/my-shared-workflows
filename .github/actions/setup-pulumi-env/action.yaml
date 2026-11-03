@@ -51,7 +51,7 @@ runs:
         tag: v0.0.50
 
     - name: Install Pulumi CLI
-      uses: pulumi/actions@v7.0.0
+      uses: pulumi/actions@v7.1.0
       with:
         pulumi-version-file: .pulumi.version
 
